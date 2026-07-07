@@ -1,0 +1,86 @@
+.Box{
+    width : 100%;
+    height: 700px;
+    background: rgb(175, 175, 219);
+    border-radius: 0 0 20px 20px;
+}
+
+.content{
+    height : 500px;
+    color : black;
+    width : 700px;
+    font-size: 50px;
+    font-family: 'Times New Roman', Times, serif;
+
+    position: relative;
+    top : 25%;
+
+}
+
+p{
+    font-size: 25px;
+    color:black
+}
+
+.button{
+    /* margin-right : 50px; */
+    padding:12px 32px;
+    width : 250px;
+
+    border:2px solid #173f76;
+    border-radius:30px;
+
+    background:white;
+
+    color:#173f76;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+button:hover{
+    background:#173f76;
+    color:white;
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+
+}
+
+.box-buttons{
+    position: absolute;
+    left : 5px;
+    width : 700px;
+}
+
+button{
+        margin : 5px;
+        padding:12px 32px;
+
+    border:2px solid #173f76;
+    border-radius:30px;
+
+    background:white;
+
+    color:#173f76;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.generate-resume{
+    position : absolute;
+    width : 700px;
+    align-content: center;
+}
+
+.ats-image{
+    position : absolute ;
+    top : 250px;
+    left : 740px;
+    height: 60%;
+    width: 50%;
+}
