@@ -1,4 +1,4 @@
-import "./Navbar.css";
+import { Link } from "react-router-dom";import "./Navbar.css";
 import logo from "../../assets/logo.png";
 
 function Navbar() {
@@ -12,12 +12,11 @@ function Navbar() {
       <ul className="nav-links">
 
         <li>
-          Resume Analyzer
+         <a> Resume Analyzer </a>
         </li>
 
         <li>
-          Generate Resume
-        </li>
+        <Link to="/generate-resume">Generate Resume</Link>        </li>
 
         <li>
           <a href="/about-ats.html">ATS</a>
