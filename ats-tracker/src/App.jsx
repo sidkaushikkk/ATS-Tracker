@@ -1,16 +1,15 @@
-import Navbar from "./components/Navbar/Navbar";
-import Box from "./components/Box/Box";
+import { Routes, Route } from "react-router-dom";
 
-import './App.css'
+import Home from "./pages/Home.jsx";
+import GenerateResume from "./pages/GenerateResume.jsx";
 
 function App() {
-
   return (
-    <>
-    <Navbar></Navbar>
-    <Box></Box>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/generate-resume" element={<GenerateResume />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

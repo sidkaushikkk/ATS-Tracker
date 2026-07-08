@@ -20,7 +20,7 @@ function Navbar() {
         </li>
 
         <li>
-          ATS
+          <a href="/about-ats.html">ATS</a>
         </li>
 
       </ul>
