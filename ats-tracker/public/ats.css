@@ -22,17 +22,17 @@ body{
     overflow:hidden;
 }
 
-.overlay{
-    position:absolute;
-    inset:0;
-    background:rgba(248, 242, 242, 0.45);
-}
-
 .hero-content{
     position:relative;
     width:100%;
     padding:20px;
     z-index:2;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(248, 242, 242, 0.45);
 }
 
 .hero h1{
