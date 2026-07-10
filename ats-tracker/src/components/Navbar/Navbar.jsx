@@ -16,7 +16,8 @@ function Navbar() {
         </li>
 
         <li>
-        <Link to="/generate-resume">Generate Resume</Link>        </li>
+        <Link to="/generate-resume">Generate Resume</Link>       
+        </li>
 
         <li>
           <a href="/about-ats.html">ATS</a>
@@ -25,8 +26,8 @@ function Navbar() {
       </ul>
 
       <div className="buttons">
-        <button className="login">Login with personal account</button>
-        <button className="signup">Login with college mail</button>
+        <button className="login-personal">Login with personal account</button>
+        <button className="login-collegeMail">Login with college mail</button>
         <button className="register">Register</button>
       </div>
 
