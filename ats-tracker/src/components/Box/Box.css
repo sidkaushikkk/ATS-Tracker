@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
 .Box{
     width : 100%;
     height: 750px;
-    background: rgb(175, 175, 219);
+    background: rgb(139, 145, 147);
     border-radius: 0 0 20px 20px;
     position: relative;
     top : 85px;
@@ -38,7 +40,7 @@ animation: type1 4s steps(22) infinite;
 
 .line2 {
     animation: type2 4s steps(10) infinite;
-    color :rgb(78, 64, 37);
+    color :rgb(222,222,41);
 }
 
 @keyframes type1 {
@@ -58,16 +60,23 @@ animation: type1 4s steps(22) infinite;
 .highlight{
     font-family: "Manrope" , sans-serif;
     font-size: 52px;
-    color: rgb(78, 64, 37);
+    color: rgb(222, 222, 41);
 }
 
 
 p{
-    font-size: 25px;
+    margin-left: 40px;
+    margin-bottom: 40px;
+    width : 600px;
+    font-weight: 700;
+    font-size: 20px;
     color:black;
-    font-family: "Manrope", sans-serif;;
+    font-family: "Manrope", sans-serif;
 }
 
+.p-highlight{
+    color: #7f390b;
+}
 .button{
     /* margin-right : 50px; */
     padding:12px 32px;
@@ -76,7 +85,7 @@ p{
     border:2px solid #173f76;
     border-radius:30px;
 
-    background:white;
+    background: whitesmoke ;
 
     color:#173f76;
     font-weight:600;
@@ -215,10 +224,10 @@ button{
     position: relative;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(12px);
+    background: rgba(4, 21, 62, 0.4);
+    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(185, 49, 49, 0.08);
     border-radius: 24px;
     overflow: hidden;
     display: flex;
@@ -229,8 +238,8 @@ button{
 
 
 .animation-content {
-    animation: float 5s ease-in-out infinite;
-    transform: scale(1.15);
+    animation: float 3s ease-in-out infinite;
+    transform: scale(1.5);
     display: flex;
     gap: 50px;
     align-items: center;
@@ -254,7 +263,7 @@ button{
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-    opacity: 0.15;
+    opacity: 0.5;
     pointer-events: none;
 }
 .p-1 { width: 120px; height: 120px; top: 10%; left: 5%; animation: float-p-1 12s ease-in-out infinite; }
@@ -274,11 +283,11 @@ button{
     position: absolute;
     padding: 6px 12px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(234, 10, 10, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.7);
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 800;
     font-family: var(--sans);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     pointer-events: none;
@@ -286,14 +295,14 @@ button{
     transition: all 0.3s ease;
 }
 
-.kw-1 { top: 15%; left: 6%; animation: kw-float-1 8s ease-in-out infinite; }
-.kw-2 { top: 46%; left: 4%; animation: kw-float-2 10s ease-in-out infinite; }
-.kw-3 { top: 76%; left: 8%; animation: kw-float-3 9s ease-in-out infinite; }
-.kw-4 { top: 8%; right: 40%; animation: kw-float-4 7s ease-in-out infinite; }
-.kw-5 { bottom: 5%; right: 38%; animation: kw-float-5 8s ease-in-out infinite; }
-.kw-6 { top: 25%; right: 10%; animation: kw-float-6 11s ease-in-out infinite; }
-.kw-7 { top: 55%; right: 12%; animation: kw-float-7 9s ease-in-out infinite; }
-.kw-8 { bottom: 12%; left: 22%; animation: kw-float-8 10s ease-in-out infinite; }
+.kw-1 { top: 15%; left: 6%; animation: kw-float-1 2s ease-in-out infinite; }
+.kw-2 { top: 46%; left: 4%; animation: kw-float-2 3s ease-in-out infinite; }
+.kw-3 { top: 76%; left: 8%; animation: kw-float-3 2s ease-in-out infinite; }
+.kw-4 { top: 8%; right: 40%; animation: kw-float-4 2s ease-in-out infinite; }
+.kw-5 { bottom: 5%; right: 38%; animation: kw-float-5 3s ease-in-out infinite; }
+.kw-6 { top: 25%; right: 10%; animation: kw-float-6 3s ease-in-out infinite; }
+.kw-7 { top: 55%; right: 12%; animation: kw-float-7 3s ease-in-out infinite; }
+.kw-8 { bottom: 12%; left: 22%; animation: kw-float-8 3s ease-in-out infinite; }
 
 @keyframes kw-float-1 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(4px, -8px) rotate(2deg); color: #61dafb; border-color: rgba(97, 218, 251, 0.3); background: rgba(97, 218, 251, 0.08); } }
 @keyframes kw-float-2 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-6px, 5px) rotate(-1.5deg); color: #f7df1e; border-color: rgba(247, 223, 30, 0.3); background: rgba(247, 223, 30, 0.08); } }

@@ -42,7 +42,7 @@ function Box(){
 
                 <br/>
 
-                <p>Over 75% of resumes are filtered out by Applicant Tracking Systems before reaching a recruiter.
+                <p>Over <span className="p-highlight">75% of resumes</span> are filtered out by <span className="p-highlight">Applicant Tracking Systems</span> before reaching a recruiter.
                      Find out how your resume performs—and how to improve it.</p>
 
                 <div className="box-buttons">
