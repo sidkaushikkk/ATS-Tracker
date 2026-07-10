@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Briefcase, Sun, Moon, Download, Sparkles, AlertCircle } from 'lucide-react';
+import  { useState, useEffect, useRef } from 'react';
+import {  Download,  AlertCircle } from 'lucide-react';
 import ResumeForm from '../components/ResumeForm';
 import ResumePreview from '../components/ResumePreview';
+import logo from "../assets/logo.png";
+
 import './GenerateResume.css';
 
 // Initial state for the resume data, starts completely empty as per requirements
@@ -52,10 +54,6 @@ export default function App() {
     return initialResumeData;
   });
 
-  // App Theme State
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('app_theme') || 'light';
-  });
 
   // PDF Generation loading state
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -69,15 +67,7 @@ export default function App() {
     localStorage.setItem('ats_resume_data', JSON.stringify(resumeData));
   }, [resumeData]);
 
-  // Sync theme
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('app_theme', theme);
-  }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
 
   // State update handlers
   const updatePersonalInfo = (field, value) => {
@@ -405,19 +395,15 @@ export default function App() {
     <div className="app-container">
       {/* Header bar */}
       <header className="app-header glass-panel">
+
         <div className="brand-section">
-          <Briefcase className="brand-icon" size={24} />
-          <h1 className="brand-name">ATS Pro Resume Builder</h1>
+            <div className="logo">
+              <img src={logo} alt="logo" />
+            </div>
+      
+          <h1 className="brand-name">Resume Builder</h1>
         </div>
-        <div className="header-actions">
-          <button
-            onClick={toggleTheme}
-            className="theme-toggle-btn"
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-          >
-            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-          </button>
-        </div>
+
       </header>
 
       {/* Main Form + Preview Workspace */}

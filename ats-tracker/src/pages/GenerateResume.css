@@ -2,7 +2,7 @@
 
 :root {
     /* Color System - Light Mode default */
-    --bg-app: #f4f7fa;
+    --bg-app: rgba(255, 255, 255, 0.85);
     --bg-card: rgba(255, 255, 255, 0.85);
     --bg-input: #ffffff;
     --border-color: #e2e8f0;
@@ -68,7 +68,7 @@
 body {
     font-family: var(--font-sans);
     background-color: var(--bg-app);
-    color: var(--text-main);
+    color: black;
     min-height: 100vh;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -116,7 +116,7 @@ body {
     align-items: center;
     padding: 16px 24px;
     border-bottom: 1px solid var(--border-color);
-    background: var(--bg-card);
+    background: rgb(175, 175, 219);
     backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
@@ -134,6 +134,7 @@ body {
 }
 
 .brand-name {
+    color: black;
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: 1.3rem;
@@ -193,7 +194,7 @@ body {
 }
 
 .btn-primary {
-    background-color: var(--accent-primary);
+    background-color: rgb(42,42,114);
     color: #ffffff;
 }
 
@@ -204,9 +205,9 @@ body {
 }
 
 .btn-secondary {
-    background-color: var(--accent-soft);
+    background-color: rgb(42,42,114);
     border-color: var(--accent-border);
-    color: var(--accent-primary);
+    color: white;
 }
 
 .btn-secondary:hover {
@@ -950,7 +951,7 @@ body {
 
 /* Sticky Preview Container Panel */
 .preview-sticky-control {
-    background: var(--bg-card);
+    background: rgb(175, 175, 219);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: 12px 16px;
@@ -961,6 +962,7 @@ body {
 }
 
 .preview-controls-left h3 {
+    color : black;
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: 1.05rem;
