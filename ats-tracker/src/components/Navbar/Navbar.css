@@ -17,6 +17,7 @@
     background:rgb(6, 36, 68);
     border-bottom:1px solid #e6e6e6;
     position: fixed;
+    z-index: 9999;
 }
 
 .logo img{

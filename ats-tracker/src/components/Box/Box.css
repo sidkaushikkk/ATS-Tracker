@@ -3,10 +3,10 @@
 .Box{
     width : 100%;
     height: 750px;
-    background: rgb(139, 145, 147);
+  background: #d3d1e1;
     border-radius: 0 0 20px 20px;
     position: relative;
-    top : 85px;
+    margin-top : 85px;
 }
 
 .content{
@@ -40,7 +40,7 @@ animation: type1 4s steps(22) infinite;
 
 .line2 {
     animation: type2 4s steps(10) infinite;
-    color :rgb(222,222,41);
+    color: #7f390b;
 }
 
 @keyframes type1 {
@@ -60,7 +60,7 @@ animation: type1 4s steps(22) infinite;
 .highlight{
     font-family: "Manrope" , sans-serif;
     font-size: 52px;
-    color: rgb(222, 222, 41);
+    color: #7f390b;
 }
 
 
