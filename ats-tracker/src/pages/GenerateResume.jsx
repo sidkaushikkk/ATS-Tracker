@@ -1,4 +1,4 @@
-import  { useState, useEffect, useRef } from 'react';
+import  { useState, useRef } from 'react';
 import {  Download,  AlertCircle } from 'lucide-react';
 import ResumeForm from '../components/ResumeForm';
 import ResumePreview from '../components/ResumePreview';
