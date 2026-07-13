@@ -62,13 +62,6 @@ export default function App() {
   // Ref to target the print container
   const previewRef = useRef(null);
 
-  // Sync state to local storage automatically
-  useEffect(() => {
-    localStorage.setItem('ats_resume_data', JSON.stringify(resumeData));
-  }, [resumeData]);
-
-
-
   // State update handlers
   const updatePersonalInfo = (field, value) => {
     setResumeData((prev) => ({

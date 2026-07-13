@@ -64,3 +64,8 @@ body {
   flex-direction: column;
   box-sizing: border-box;
 }
+
+.accordion-header:hover{
+  background-color: #d3d1e1;
+  color: #08060d;
+}

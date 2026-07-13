@@ -119,6 +119,7 @@ export default function ResumeForm({
           <button
             type="button"
             className="accordion-header"
+            
             onClick={() => toggleSection('personalInfo')}
           >
             <div className="accordion-title-group">
