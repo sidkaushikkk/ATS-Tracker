@@ -23,8 +23,9 @@
 h2{
     line-height: 1.2;
     width: 600px;
-    margin-left: 30px;
+    margin-left: 45px;
     text-align: left;
+    font-weight: bold;
 }
 
 .line {
@@ -45,9 +46,9 @@ animation: type1 4s steps(22) infinite;
 
 @keyframes type1 {
     0%   { width: 0; }
-    30%  { width: 22ch; }  /* First line finishes */
-    70%  { width: 22ch; }  /* Hold */
-    100% { width: 22ch; }     /* Erase */
+    30%  { width: 26ch; }  /* First line finishes */
+    70%  { width: 26ch; }  /* Hold */
+    100% { width: 26ch; }     /* Erase */
 }
 
 @keyframes type2 {
@@ -58,9 +59,10 @@ animation: type1 4s steps(22) infinite;
 }
 
 .highlight{
-    font-family: "Manrope" , sans-serif;
-    font-size: 52px;
+    font-family: "Times New Roman" , sans-serif;
+    font-size: 48px;
     color: #7f390b;
+    font-weight: bold;
 }
 
 
@@ -77,10 +79,12 @@ p{
 .p-highlight{
     color: #7f390b;
 }
-.button{
-    /* margin-right : 50px; */
-    padding:12px 32px;
-    width : 250px;
+.genAnalysis-button , .abtATS-button{
+    margin-right : 50px;
+    font-size: 50%;
+    padding:12px 22px;
+    height: 70px;
+    width : 600px;
 
     border:2px solid #173f76;
     border-radius:30px;
@@ -95,6 +99,10 @@ p{
     transition:.3s;
 }
 
+.abtATS-button:hover{
+background-color: rgb(25, 126, 198);
+}
+
 button:hover{
     background:#173f76;
     color:white;
@@ -103,15 +111,17 @@ button:hover{
 }
 
 .box-buttons{
-    position: absolute;
-    left : 5px;
+    font-family :Georgia, 'Times New Roman', Times, serif ;
+    font-weight: lighter;
+    position: relative;
+    top : 30px;
+
     width : 700px;
 }
 
 button{
-        margin : 5px;
-        padding:12px 32px;
-
+    margin : 5px;
+    padding:12px 32px;
     border:2px solid #173f76;
     border-radius:30px;
 
@@ -127,7 +137,9 @@ button{
 }
 
 .generate-resume{
-    position : absolute;
+
+    position: relative;
+    width: 100%;
     width : 700px;
     align-content: center;
 }
@@ -182,12 +194,6 @@ button{
         display: flex;
         justify-content: center;
         gap: 15px;
-        margin-top: 20px;
-    }
-
-    .generate-resume {
-        position: relative;
-        width: 100%;
         margin-top: 20px;
     }
 

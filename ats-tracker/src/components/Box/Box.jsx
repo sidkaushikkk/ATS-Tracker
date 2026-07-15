@@ -47,8 +47,8 @@ function Box(){
 
                 <div className="box-buttons">
 
-                    <button className="button">Generate Resume Analysis </button>
-                    <a href = "/about-ats.html"><button className="button">About ATS</button></a>
+                    <button className="genAnalysis-button" onClick={() => navigate("/upload-resume")}>Generate Analysis </button>
+                    <a href = "/about-ats.html"><button className="abtATS-button">About ATS</button></a>
 
                 </div>
 
