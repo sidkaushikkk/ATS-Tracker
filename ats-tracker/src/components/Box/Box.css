@@ -136,8 +136,10 @@ button{
 
 }
 
+.genResume-button{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 .generate-resume{
-
     position: relative;
     width: 100%;
     width : 700px;

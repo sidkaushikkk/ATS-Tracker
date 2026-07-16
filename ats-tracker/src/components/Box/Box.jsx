@@ -55,7 +55,7 @@ function Box(){
                 <br/>
                 <br/>
               <div className = "generate-resume">
-                  <p>Don't have a resume ? <button onClick={() => navigate("/generate-resume")}>Generate Resume</button></p>  
+                  <p>Don't have a resume ? <button className="genResume-button" onClick={() => navigate("/generate-resume")}>Generate Resume</button></p>  
                 </div>
             </div>
 
