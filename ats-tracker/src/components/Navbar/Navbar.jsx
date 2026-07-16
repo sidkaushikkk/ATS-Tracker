@@ -12,7 +12,7 @@ function Navbar() {
       <ul className="nav-links">
 
         <li>
-         <a> Resume Analyzer </a>
+        <Link to="/upload-resume">Resume Analyzer</Link>
         </li>
 
         <li>

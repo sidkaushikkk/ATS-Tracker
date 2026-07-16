@@ -1,4 +1,5 @@
 import "./HomeSections.css";
+import { Link } from "react-router-dom";
 
 function FinalCTA() {
   return (
@@ -7,7 +8,8 @@ function FinalCTA() {
       <p>
         Upload your resume and receive detailed ATS feedback within seconds.
       </p>
-      <button className="cta-btn">Analyze Resume</button>
+      <button className="cta-btn"><Link to="/upload-resume">Analyze Resume</Link>       
+</button>
     </section>
   );
 }

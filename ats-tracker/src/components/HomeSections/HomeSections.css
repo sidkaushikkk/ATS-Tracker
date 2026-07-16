@@ -609,7 +609,7 @@
 
 .cta-btn {
   padding: 14px 40px;
-  background: whitesmoke;
+  background:#173f76 ;
   color: #173f76;
   border: 2px solid #173f76;
   border-radius: 30px;
@@ -621,7 +621,7 @@
 }
 
 .cta-btn:hover {
-  background: #173f76;
+  background: rgb(48, 149, 48);
   color: #fff;
   box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
