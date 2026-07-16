@@ -7,16 +7,12 @@ const faqs = [
     a: "ATS stands for Applicant Tracking System. It is software used by employers to automatically filter and rank resumes before a human ever reads them.",
   },
   {
-    q: "Is my resume stored?",
-    a: "No. Your resume is processed in memory and is never saved to our servers or shared with any third party.",
-  },
-  {
     q: "Which file formats are supported?",
     a: "We support PDF, DOCX, and TXT file formats. For best results, upload a PDF.",
   },
   {
     q: "Is the analysis free?",
-    a: "Yes, the basic ATS analysis is completely free. Premium features are available for users who want deeper insights.",
+    a: "Yes, the basic ATS analysis is completely free. Premium features are available for users who want deeper insights or job-specific resume insights.",
   },
   {
     q: "How can I improve my score?",

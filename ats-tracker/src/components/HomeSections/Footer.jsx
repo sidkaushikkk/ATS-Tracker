@@ -6,9 +6,7 @@ function Footer() {
     { label: "Contact",        href: "#" },
     { label: "Privacy Policy", href: "#" },
     { label: "Terms",          href: "#" },
-    { label: "GitHub",         href: "https://github.com" },
-    { label: "LinkedIn",       href: "https://linkedin.com" },
-  ];
+    ];
 
   return (
     <footer className="hs-footer">
@@ -20,7 +18,7 @@ function Footer() {
         ))}
       </div>
       <p className="footer-copy">
-        © 2026 ATS Resume Analyzer. All Rights Reserved.
+        © Sid Kaushik | ATS Resume Analyzer. All Rights Reserved.
       </p>
     </footer>
   );
