@@ -1,0 +1,214 @@
+/* UploadResume.css */
+
+.upload-resume-page {
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgba(211,209,225, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Mockup Header Navigation */
+.mockup-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 48px;
+  position: relative;
+  z-index: 5;
+}
+
+.mockup-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+}
+
+.logo-text {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Freebie Button (Top-Right) matching reference image */
+.freebie-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+  transition: all 0.3s ease;
+}
+
+.freebie-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.55);
+}
+
+.freebie-badge {
+  background-color: #fca5a5;
+  color: #991b1b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.freebie-text {
+  letter-spacing: 0.5px;
+}
+
+.freebie-icon {
+  font-size: 15px;
+}
+
+/* Background Waves (Left and Right Bottom Corner) */
+.bg-decoration {
+  position: absolute;
+  background-color: #2563eb;
+  z-index: 1;
+}
+
+.bg-decoration.wave-left {
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  bottom: -200px;
+  left: -200px;
+  opacity: 0.85;
+  filter: blur(2px);
+}
+
+.bg-decoration.wave-right {
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  bottom: -220px;
+  right: -220px;
+  opacity: 0.85;
+  filter: blur(2px);
+}
+
+/* Center Content hosting the Model */
+.upload-resume-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  padding: 40px;
+}
+
+/* Closed State Container */
+.closed-state-container {
+  display: flexbox;
+  background-color: #ffffff;
+  padding: 48px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.05);
+  width: 650px;
+  text-align: center;
+  animation: fade-in 0.5s ease-out forwards;
+    justify-items: center;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.closed-state-title {
+  display: inline;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 24px;
+  color: #1e293b;
+  margin: 0 0 20px 0;
+
+  width :450px;
+
+}
+
+.closed-state-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: #64748b;
+  margin: 20px 0 28px 0;
+  line-height: 1.6;
+}
+
+/* Trigger Button */
+.open-model-trigger-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+  transition: all 0.25s ease;
+}
+
+.open-model-trigger-btn:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 12px 25px rgba(29, 78, 216, 0.45);
+  transform: translateY(-2px);
+}
+
+.open-model-trigger-btn:active {
+  transform: scale(0.98);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mockup-page-header {
+    padding: 16px 24px;
+  }
+  
+  .freebie-button {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  
+  .bg-decoration.wave-left {
+    width: 300px;
+    height: 300px;
+    bottom: -150px;
+    left: -150px;
+  }
+
+  .bg-decoration.wave-right {
+    width: 350px;
+    height: 350px;
+    bottom: -150px;
+    right: -150px;
+  }
+}
