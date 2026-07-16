@@ -2,13 +2,20 @@ import  { useState, useEffect, useRef } from "react";
 import { FaRegFilePdf, FaRegFileWord, FaRegFileArchive, FaCloudUploadAlt } from "react-icons/fa";
 import "./UploadModel.css";
 
-export default function UploadModel({ onClose }) {
+export default function UploadModel({ onClose, onSelect }) {
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [activeIndex, setActiveIndex] = useState(2); // Match mockup where the 3rd item is highlighted
   
   // Initial list matching the mockup files and progress
   const [files, setFiles] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const chooseFile = (id) => {
+    const chosen = files.find((f) => f.id === id);
+    if (chosen && typeof onSelect === "function") onSelect(chosen);
+    onClose();
+  };
 
   // Animate initial progress values on mount
 
@@ -217,8 +224,10 @@ export default function UploadModel({ onClose }) {
               return (
                 <div 
                   key={file.id} 
-                  className={`upload-file-row ${activeIndex === index ? "active" : ""}`}
+                  className={`upload-file-row ${activeIndex === index ? "active" : ""} ${selectedId === file.id ? "selected" : ""}`}
                   onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() => setSelectedId(file.id)}
+                  onDoubleClick={() => chooseFile(file.id)}
                 >
                   {renderFileIcon(file.extension)}
                   
@@ -254,6 +263,19 @@ export default function UploadModel({ onClose }) {
                 </div>
               );
             })}
+            {/* Footer actions for choosing a file */}
+            {files.length > 0 && (
+              <div className="upload-file-list-actions">
+                <button className="upload-cancel-btn" onClick={onClose}>Cancel</button>
+                <button
+                  className="upload-choose-btn"
+                  disabled={!selectedId}
+                  onClick={() => chooseFile(selectedId)}
+                >
+                  Choose file
+                </button>
+              </div>
+            )}
           </section>
         </main>
       </div>
