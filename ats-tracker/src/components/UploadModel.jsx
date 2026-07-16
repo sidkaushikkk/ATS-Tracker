@@ -171,8 +171,7 @@ export default function UploadModel({ onClose, onSelect }) {
         role="dialog"
         aria-model="true"
       >
-        {/* macOS Style Window Controls */}
-        {/* Close Button */}
+
         <button 
           className="upload-close-button" 
           onClick={onClose} 
