@@ -1,4 +1,5 @@
 import "./HomeSections.css";
+import { Link } from "react-router-dom";
 
 function HowItWorks() {
   const steps = [
@@ -22,6 +23,8 @@ function HowItWorks() {
   return (
     <section className="hs-section hs-section-first">
       <h2 className="hs-heading">How It Works</h2>
+             <button className="lol"><Link to="/analyzations-page">Generate Resume</Link> </button> <Link to="/generate-resume">Generate Resume</Link>       
+
 
       <div className="hiw-steps">
         {steps.map((step, i) => (

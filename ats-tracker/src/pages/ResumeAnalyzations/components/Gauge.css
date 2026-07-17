@@ -1,0 +1,47 @@
+.gauge {
+  align-self: center;
+  height: 200px;
+  width: 400px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+svg {
+  overflow: visible;
+}
+
+.track,
+.progress {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.track {
+  stroke: #2d2d2d;
+}
+
+.progress {
+  stroke: #00d26a;
+  transition: stroke-dashoffset 20ms linear;
+}
+
+.score {
+  position: absolute;
+  bottom: 5px;
+  text-align: center;
+}
+
+.score h1 {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 700;
+  color: black;
+}
+
+.score span {
+  color: black;
+  font-size : 14px;
+}
