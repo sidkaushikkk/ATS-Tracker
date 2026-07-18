@@ -84,7 +84,8 @@ export default function UploadModel({ onClose, onSelect }) {
         extension: ext,
         targetProgress: 100,
         currentProgress: 0,
-        status: "uploading"
+        status: "uploading",
+        fileObject: file
       };
     });
 

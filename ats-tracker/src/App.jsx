@@ -11,7 +11,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/generate-resume" element={<GenerateResume />} />
       <Route path="/upload-resume" element={<UploadResume />} />
-      <Route path="/analyzations-page" element={<AnalyzePage />} />
+      <Route path="/analysis" element={<AnalyzePage />} />
     </Routes>
   );
 }
