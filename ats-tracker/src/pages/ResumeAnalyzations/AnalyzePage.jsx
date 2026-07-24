@@ -8,13 +8,27 @@ import {
   Award, 
   ArrowLeft, 
   UploadCloud, 
-  Check, 
   ShieldCheck, 
   Briefcase, 
   Layers 
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./AnalyzePage.css";
+
+const suitableJobRoles = [
+  { role: "Frontend Developer", match: 94, level: "Excellent Match" },
+  { role: "Full Stack Developer", match: 89, level: "Strong Match" },
+  { role: "React Developer", match: 87, level: "Strong Match" },
+  { role: "UI Engineer", match: 82, level: "Strong Match" },
+  { role: "Software Engineer", match: 78, level: "Good Match" }
+];
+
+function getMatchTone(match) {
+  if (match >= 90) return "excellent";
+  if (match >= 80) return "strong";
+  if (match >= 70) return "good";
+  return "potential";
+}
 
 // Custom Intersection Observer Hook for animations
 function useIntersectionObserver(options = { threshold: 0.1 }) {
@@ -135,23 +149,9 @@ export default function AnalyzePage() {
   const arcLength = 157.08;
   const strokeDashoffset = arcLength - (arcLength * (scores.overall / 100));
 
-  // Interactive Job Roles Selection
-  const [selectedRoles, setSelectedRoles] = useState(new Set(["Frontend Developer"]));
-
-  const toggleRoleSelection = (role) => {
-    setSelectedRoles((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(role)) {
-        newSet.delete(role);
-      } else {
-        newSet.add(role);
-      }
-      return newSet;
-    });
-  };
-
   // Keyword Match Visbility Tracker
   const [keywordSectionRef, isKeywordSectionVisible] = useIntersectionObserver();
+  const [jobRolesSectionRef, isJobRolesSectionVisible] = useIntersectionObserver();
 
   // Predefined keyword list
   const keywords = [
@@ -385,7 +385,6 @@ export default function AnalyzePage() {
               </li>
             </ul>
           </AnimatedSection>
-            <br/>
           <AnimatedSection className="obs-col shadow-card-block">
             <div className="card-block-header blue-theme">
               <Lightbulb size={22} className="block-icon" />
@@ -419,6 +418,37 @@ export default function AnalyzePage() {
             </ul>
           </AnimatedSection>
 
+          <AnimatedSection className="obs-col shadow-card-block">
+            <div className="card-block-header blue-theme">
+              <Briefcase size={22} className="block-icon" />
+              <h2>Suitable Job Roles</h2>
+            </div>
+            <div className="job-role-match-list" ref={jobRolesSectionRef}>
+              {suitableJobRoles.map((jobRole, index) => {
+                const matchTone = getMatchTone(jobRole.match);
+
+                return (
+                  <div className="job-role-match-item" key={jobRole.role}>
+                    <div className="job-role-match-header">
+                      <span className="job-role-name">{jobRole.role}</span>
+                      <span className={`job-role-match-value ${matchTone}`}>{jobRole.match}%</span>
+                    </div>
+                    <div className="kw-progress-track">
+                      <div
+                        className={`kw-progress-fill job-role-progress-fill ${matchTone}`}
+                        style={{
+                          width: isJobRolesSectionVisible ? `${jobRole.match}%` : "0%",
+                          transition: `width 1.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 80}ms`
+                        }}
+                      ></div>
+                    </div>
+                    <span className={`job-role-match-label ${matchTone}`}>{jobRole.level}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </AnimatedSection>
+
         </div>
 
         {/* SECTION 2: ATS Keyword Match */}
@@ -436,13 +466,12 @@ export default function AnalyzePage() {
               <div key={kw.name} className="keyword-bar-item">
                 <div className="kw-bar-labels">
                   <span className="kw-name">{kw.name}</span>
-                  <span className="kw-value">{kw.value}%</span>
                 </div>
                 <div className="kw-progress-track">
                   <div
                     className="kw-progress-fill"
                     style={{
-                      width: isKeywordSectionVisible ? `${kw.value}%` : "0%",
+                      width: isKeywordSectionVisible ? "100%" : "0%",
                       transition: `width 1.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 80}ms`
                     }}
                   ></div>
@@ -493,44 +522,7 @@ export default function AnalyzePage() {
           </div>
         </AnimatedSection>
 
-        {/* SECTION 4: Suitable Job Roles */}
-        <AnimatedSection className="job-roles-section glass-panel">
-          <div className="title-with-icon">
-            <Briefcase size={24} className="section-hdr-icon" />
-            <h2>Suitable Job Roles</h2>
-          </div>
-          <p className="section-subtitle-description">
-            Our algorithm matched your profile against the following core titles. Click to select/highlight matching targets.
-          </p>
-
-          <div className="job-roles-grid">
-            {[
-              "Frontend Developer",
-              "React Developer",
-              "Full Stack Developer",
-              "Web Developer",
-              "Software Engineer Intern",
-              "JavaScript Developer",
-              "UI Developer"
-            ].map((role) => {
-              const isSelected = selectedRoles.has(role);
-              return (
-                <div
-                  key={role}
-                  className={`role-select-card ${isSelected ? "selected" : ""}`}
-                  onClick={() => toggleRoleSelection(role)}
-                >
-                  <div className="role-checkbox">
-                    {isSelected && <Check size={12} className="check-svg" />}
-                  </div>
-                  <span className="role-card-text">{role}</span>
-                </div>
-              );
-            })}
-          </div>
-        </AnimatedSection>
-
-        {/* SECTION 5: Overall Recommendation */}
+        {/* SECTION 4: Overall Recommendation */}
         <AnimatedSection className="recommendation-callout-card">
           <div className="recommendation-badge">
             <Award size={18} />
@@ -541,7 +533,7 @@ export default function AnalyzePage() {
           </p>
         </AnimatedSection>
 
-        {/* SECTION 6: Bottom Actions */}
+        {/* SECTION 5: Bottom Actions */}
         <div className="analysis-page-footer-actions">
           <button 
             className="btn btn-outline footer-action-btn"

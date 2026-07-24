@@ -468,7 +468,7 @@
 /* SECTION 1: Details cards (Observations, Problems, Suggestions) */
 .analysis-details-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
 }
 
@@ -703,80 +703,79 @@
   background-color: #f59e0b;
 }
 
-/* SECTION 4: Suitable Job Roles interactive cards */
-.section-subtitle-description {
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: #64748b;
-  margin: 8px 0 24px 0;
+/* SECTION 2: Suitable Job Roles */
+.job-role-match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.job-roles-grid {
+.job-role-match-item {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.job-role-match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   gap: 12px;
 }
 
-.role-select-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 12px 18px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  user-select: none;
-}
-
-.role-select-card:hover {
-  background-color: #f1f5f9;
-  border-color: #cbd5e1;
-  transform: translateY(-1px);
-}
-
-.role-select-card.selected {
-  background-color: #eff6ff;
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
-}
-
-.role-checkbox {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 1.5px solid #cbd5e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  transition: all 0.2s;
-}
-
-.role-select-card.selected .role-checkbox {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-}
-
-.check-svg {
-  color: #ffffff;
-  stroke-width: 3px;
-}
-
-.role-card-text {
+.job-role-name {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #334155;
-  transition: color 0.2s;
 }
 
-.role-select-card.selected .role-card-text {
-  color: #1e3a8a;
+.job-role-match-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
 }
 
-/* SECTION 5: Overall Recommendation callout */
+.job-role-match-value.excellent { color: #059669; }
+.job-role-match-value.strong { color: #2563eb; }
+.job-role-match-value.good { color: #d97706; }
+.job-role-match-value.potential { color: #64748b; }
+
+.job-role-progress-fill.excellent { background-color: #10b981; }
+.job-role-progress-fill.strong { background-color: #2563eb; }
+.job-role-progress-fill.good { background-color: #f59e0b; }
+.job-role-progress-fill.potential { background-color: #94a3b8; }
+
+.job-role-match-label {
+  align-self: flex-start;
+  border-radius: 20px;
+  padding: 3px 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.job-role-match-label.excellent {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+
+.job-role-match-label.strong {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.job-role-match-label.good {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+
+.job-role-match-label.potential {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+/* SECTION 3: Overall Recommendation callout */
 .recommendation-callout-card {
   background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
   border: 1px solid rgba(37, 99, 235, 0.15);
@@ -815,7 +814,7 @@
   margin: 0;
 }
 
-/* SECTION 6: Page Footer Bottom Actions */
+/* SECTION 4: Page Footer Bottom Actions */
 .analysis-page-footer-actions {
   display: flex;
   justify-content: center;
