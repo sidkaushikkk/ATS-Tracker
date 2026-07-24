@@ -1,0 +1,22 @@
+[
+  {
+    "role": "Frontend Developer",
+    "requiredSkills": ["React", "JavaScript", "CSS", "HTML", "Vue", "Angular", "Tailwind", "Frontend", "UI", "UX"]
+  },
+  {
+    "role": "Backend Developer",
+    "requiredSkills": ["Node.js", "Express", "Python", "Django", "Java", "Spring", "SQL", "MongoDB", "PostgreSQL", "API"]
+  },
+  {
+    "role": "Full Stack Developer",
+    "requiredSkills": ["React", "Node.js", "JavaScript", "MongoDB", "Express", "SQL", "Git", "API", "Frontend", "Backend"]
+  },
+  {
+    "role": "Software Engineer",
+    "requiredSkills": ["Data Structures", "Algorithms", "Java", "Python", "C++", "System Design", "Git", "Agile", "Testing"]
+  },
+  {
+    "role": "Data Scientist",
+    "requiredSkills": ["Python", "Machine Learning", "Data Analysis", "SQL", "Pandas", "NumPy", "TensorFlow", "Statistics"]
+  }
+]

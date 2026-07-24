@@ -9,9 +9,43 @@ export function UploadResume() {
   const [selectedFile, setSelectedFile] = useState(null);
   const navigate = useNavigate();
 
-  const handleProceed = () => {
-    if (selectedFile) {
-      navigate("/analysis", { state: { selectedFile } });
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleProceed = async () => {
+    if (selectedFile && selectedFile.fileObject) {
+      setIsUploading(true);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first to analyze your resume.");
+        setIsUploading(false);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("resume", selectedFile.fileObject);
+
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+        const res = await fetch(`${apiUrl}/analyze`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData,
+        });
+
+        if (res.ok) {
+          const analysisData = await res.json();
+          navigate("/analysis", { state: { analysisData, fileName: selectedFile.name, fileObject: selectedFile.fileObject } });
+        } else {
+          alert("Failed to analyze resume.");
+        }
+      } catch (error) {
+        console.error("Error uploading resume", error);
+        alert("An error occurred during upload.");
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -65,8 +99,9 @@ export function UploadResume() {
                   <button 
                     className="proceed-btn" 
                     onClick={handleProceed}
+                    disabled={isUploading}
                   >
-                    Proceed to Analysis
+                    {isUploading ? "Analyzing..." : "Proceed to Analysis"}
                   </button>
                 </div>
               </div>

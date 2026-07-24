@@ -76,12 +76,13 @@ export default function AnalyzePage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Retrieve passed file metadata or construct a fallback for direct visits
   const file = location.state?.selectedFile || {
-    name: "Resume_Sid_Kaushik.pdf",
-    size: "142.8 KB",
-    fileObject: null
+    name: location.state?.fileName || "Resume.pdf",
+    size: "Unknown Size",
+    fileObject: location.state?.fileObject || null
   };
+
+  const analysisData = location.state?.analysisData;
 
   const [fileUrl, setFileUrl] = useState(null);
 
@@ -96,7 +97,6 @@ export default function AnalyzePage() {
     }
   }, [file]);
 
-  // Master State for all Animated Metric Numbers
   const [scores, setScores] = useState({
     overall: 0,
     formatting: 0,
@@ -108,12 +108,18 @@ export default function AnalyzePage() {
 
   // Animate the scores when page loads
   useEffect(() => {
+    if (!analysisData) {
+      // If directly accessed without data, redirect to upload
+      navigate("/upload-resume");
+      return;
+    }
+
     const targets = {
-      overall: 92,
-      formatting: 95,
-      keywords: 90,
-      readability: 91,
-      structure: 93
+      overall: analysisData.overallScore,
+      formatting: Math.min(100, analysisData.overallScore + 5),
+      keywords: Math.min(100, analysisData.overallScore + 2),
+      readability: Math.min(100, analysisData.overallScore + 8),
+      structure: Math.min(100, analysisData.overallScore + 3)
     };
 
     const duration = 1600; // 1.6s duration
@@ -123,7 +129,6 @@ export default function AnalyzePage() {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      // Easing function (easeOutQuad)
       const easeProgress = progress * (2 - progress);
 
       setScores({
@@ -142,7 +147,7 @@ export default function AnalyzePage() {
     };
 
     requestAnimationFrame(animate);
-  }, []);
+  }, [analysisData, navigate]);
 
   // Semicircular Arc Dash Offset calculation
   // Total arc length of M 10 60 A 50 50 0 0 1 110 60 is exactly PI * r = 3.14159 * 50 = 157.08
@@ -153,17 +158,11 @@ export default function AnalyzePage() {
   const [keywordSectionRef, isKeywordSectionVisible] = useIntersectionObserver();
   const [jobRolesSectionRef, isJobRolesSectionVisible] = useIntersectionObserver();
 
-  // Predefined keyword list
-  const keywords = [
-    { name: "React", value: 95 },
-    { name: "JavaScript", value: 92 },
-    { name: "CSS", value: 88 },
-    { name: "Node.js", value: 84 },
-    { name: "MongoDB", value: 81 },
-    { name: "Express", value: 78 },
-    { name: "Git", value: 90 },
-    { name: "Problem Solving", value: 85 }
-  ];
+  const keywords = analysisData?.matchedKeywords || [];
+  const suitableJobRoles = analysisData?.recommendedRoles || [];
+  const observations = analysisData?.keyObservations || [];
+  const problems = analysisData?.problems || [];
+  const suggestions = analysisData?.suggestions || [];
 
   return (
     <div className="analyze-page-wrapper">
@@ -335,26 +334,13 @@ export default function AnalyzePage() {
               <h2>Key Observations</h2>
             </div>
             <ul className="observations-bullet-list">
-              <li>
-                <div className="bullet-circle success">✓</div>
-                <span>Strong professional summary outlining key areas of expertise.</span>
-              </li>
-              <li>
-                <div className="bullet-circle success">✓</div>
-                <span>Good technical skills listing targeting modern frontend frameworks.</span>
-              </li>
-              <li>
-                <div className="bullet-circle success">✓</div>
-                <span>Clean formatting, readable margins, and distinct sections.</span>
-              </li>
-              <li>
-                <div className="bullet-circle success">✓</div>
-                <span>Relevant projects included detailing stack and live URL integrations.</span>
-              </li>
-              <li>
-                <div className="bullet-circle success">✓</div>
-                <span>Well-structured education history containing degrees and scores.</span>
-              </li>
+              {observations.map((obs, i) => (
+                <li key={i}>
+                  <div className="bullet-circle success">✓</div>
+                  <span>{obs}</span>
+                </li>
+              ))}
+              {observations.length === 0 && <li><span>No specific observations found.</span></li>}
             </ul>
           </AnimatedSection>
           <AnimatedSection className="obs-col shadow-card-block">
@@ -363,26 +349,13 @@ export default function AnalyzePage() {
               <h2>Problems Found</h2>
             </div>
             <ul className="observations-bullet-list">
-              <li>
-                <div className="bullet-circle warning">!</div>
-                <span>Missing quantified achievements inside work history lines.</span>
-              </li>
-              <li>
-                <div className="bullet-circle warning">!</div>
-                <span>Generic experience descriptions lacking clear action words.</span>
-              </li>
-              <li>
-                <div className="bullet-circle warning">!</div>
-                <span>Skills could be better categorized to avoid scanning overload.</span>
-              </li>
-              <li>
-                <div className="bullet-circle warning">!</div>
-                <span>Limited ATS keywords matching targeted developer listings.</span>
-              </li>
-              <li>
-                <div className="bullet-circle warning">!</div>
-                <span>Projects lack measurable impact metrics (e.g. speed increase, scale).</span>
-              </li>
+              {problems.map((prob, i) => (
+                <li key={i}>
+                  <div className="bullet-circle warning">!</div>
+                  <span>{prob}</span>
+                </li>
+              ))}
+              {problems.length === 0 && <li><span>No major problems found!</span></li>}
             </ul>
           </AnimatedSection>
           <AnimatedSection className="obs-col shadow-card-block">
@@ -391,30 +364,13 @@ export default function AnalyzePage() {
               <h2>Suggestions</h2>
             </div>
             <ul className="observations-bullet-list">
-              <li>
-                <div className="bullet-circle suggestion">ℹ</div>
-                <span>Add measurable achievements using percentages and metric growth.</span>
-              </li>
-              <li>
-                <div className="bullet-circle suggestion">ℹ</div>
-                <span>Improve action verbs (e.g. designed, spearheaded, optimized).</span>
-              </li>
-              <li>
-                <div className="bullet-circle suggestion">ℹ</div>
-                <span>Increase keyword density of key libraries (e.g. state management).</span>
-              </li>
-              <li>
-                <div className="bullet-circle suggestion">ℹ</div>
-                <span>Tailor resume per application to match job descriptions.</span>
-              </li>
-              <li>
-                <div className="bullet-circle suggestion">ℹ</div>
-                <span>Expand project descriptions to details of scalability challenges.</span>
-              </li>
-              <li>
-                <div className="bullet-circle suggestion">ℹ</div>
-                <span>Add relevant certifications to bolster specialized credentials.</span>
-              </li>
+              {suggestions.map((sugg, i) => (
+                <li key={i}>
+                  <div className="bullet-circle suggestion">ℹ</div>
+                  <span>{sugg}</span>
+                </li>
+              ))}
+              {suggestions.length === 0 && <li><span>No specific suggestions at this time.</span></li>}
             </ul>
           </AnimatedSection>
 
