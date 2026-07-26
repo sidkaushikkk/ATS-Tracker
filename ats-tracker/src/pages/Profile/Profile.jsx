@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import { useAuth } from '../../lib/AuthContext';
@@ -19,8 +20,11 @@ function Profile() {
     bio: '',
     linkedin: '',
     github: '',
-    portfolio: ''
+    portfolio: '',
+    profilePicture: ''
   });
+  
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -70,6 +74,31 @@ function Profile() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError("Image size must be less than 2MB.");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          profilePicture: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -124,6 +153,27 @@ function Profile() {
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="profile-form glass-panel">
+          <div className="profile-image-upload-container">
+            <div className="profile-image-upload" onClick={handleImageClick}>
+              <div className="image-preview">
+                {formData.profilePicture ? (
+                  <img src={formData.profilePicture} alt="Profile" />
+                ) : (
+                  <div className="image-placeholder">
+                    <Camera size={32} />
+                    <span>Upload Photo</span>
+                  </div>
+                )}
+              </div>
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+                style={{ display: 'none' }}
+              />
+            </div>
+          </div>
           <div className="form-group">
             <label htmlFor="name">Full Name *</label>
             <input

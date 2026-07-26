@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import { useAuth } from "../lib/AuthContext";
-import { FileText, Clock, TrendingUp, Edit, Award, Target, Activity } from "lucide-react";
+import { FileText, Clock, TrendingUp, Edit, Award, Target, Activity, MapPin, GraduationCap, Briefcase, Link, Code, Globe, Mail } from "lucide-react";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -86,19 +86,81 @@ function Dashboard() {
         
         {/* Profile Summary Section */}
         {profile && (
-          <div className="profile-summary glass-panel">
-            <div className="profile-info">
-              <h2>Welcome back, {profile.name}!</h2>
-              <p className="profile-subtitle">
-                {profile.currentRole || profile.currentStatus} • {profile.college}
-              </p>
-              {profile.bio && <p className="profile-bio">{profile.bio}</p>}
+          <div className="profile-summary glass-panel expanded-profile">
+            <div className="profile-header-main">
+              <div className="profile-avatar">
+                {profile.profilePicture ? (
+                  <img src={profile.profilePicture} alt={profile.name} />
+                ) : (
+                  <div className="avatar-placeholder">{profile.name.charAt(0)}</div>
+                )}
+              </div>
+              <div className="profile-info">
+                <h2>Welcome back, {profile.name}!</h2>
+                <p className="profile-subtitle">
+                  <Briefcase size={16} /> {profile.currentRole || profile.currentStatus}
+                </p>
+                {profile.location && (
+                  <p className="profile-location">
+                    <MapPin size={16} /> {profile.location}
+                  </p>
+                )}
+              </div>
+              <div className="profile-actions">
+                <button className="edit-profile-btn" onClick={() => navigate('/profile')}>
+                  <Edit size={16} /> Edit Profile
+                </button>
+              </div>
             </div>
-            <div className="profile-actions">
-              <button className="edit-profile-btn" onClick={() => navigate('/profile')}>
-                <Edit size={16} /> Edit Profile
-              </button>
+
+            <div className="profile-details-grid">
+              <div className="detail-card">
+                <h3><GraduationCap size={18} /> Education</h3>
+                <p><strong>College:</strong> {profile.collegeName || 'Not provided'}</p>
+                {(profile.degree || profile.major) && (
+                  <p><strong>Major:</strong> {profile.degree} {profile.major}</p>
+                )}
+                {profile.graduationYear && (
+                  <p><strong>Graduation:</strong> {profile.graduationYear}</p>
+                )}
+              </div>
+
+              <div className="detail-card">
+                <h3><Briefcase size={18} /> Career</h3>
+                <p><strong>Status:</strong> {profile.currentStatus || 'Not provided'}</p>
+                {profile.targetRole && (
+                  <p><strong>Target Role:</strong> {profile.targetRole}</p>
+                )}
+                <p className="profile-email"><Mail size={16}/> {profile.email}</p>
+              </div>
             </div>
+
+            {profile.bio && (
+              <div className="profile-bio-section">
+                <h3>About Me</h3>
+                <p>{profile.bio}</p>
+              </div>
+            )}
+
+            {(profile.linkedin || profile.github || profile.portfolio) && (
+              <div className="profile-social-links">
+                {profile.linkedin && (
+                  <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
+                    <Link size={20} /> LinkedIn
+                  </a>
+                )}
+                {profile.github && (
+                  <a href={profile.github} target="_blank" rel="noopener noreferrer" className="social-link">
+                    <Code size={20} /> GitHub
+                  </a>
+                )}
+                {profile.portfolio && (
+                  <a href={profile.portfolio} target="_blank" rel="noopener noreferrer" className="social-link">
+                    <Globe size={20} /> Portfolio
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         )}
 

@@ -60,7 +60,7 @@
     display:flex;
     gap:15px;
     border-radius:30px;
-    color:#011532;
+    color:#6388c1;
     font-weight:600;;
     margin-left: auto;
     cursor:pointer;
@@ -115,7 +115,7 @@
         justify-content: center;
         gap: 15px;
     }
-    
+
     .buttons {
         width: 100%;
         justify-content: center;

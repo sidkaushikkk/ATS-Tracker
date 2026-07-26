@@ -148,6 +148,59 @@
   cursor: not-allowed;
 }
 
+.profile-image-upload-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.profile-image-upload {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.profile-image-upload:hover {
+  border-color: #3b82f6;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+}
+
+.image-placeholder span {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .form-row {
     flex-direction: column;
