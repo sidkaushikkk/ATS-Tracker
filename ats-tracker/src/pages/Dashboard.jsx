@@ -72,7 +72,6 @@ function Dashboard() {
     return (
       <div className="dashboard-page">
         <Navbar />
-        <div className="loading-state">Loading your dashboard...</div>
       </div>
     );
   }
