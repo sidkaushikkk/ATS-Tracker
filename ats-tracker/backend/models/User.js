@@ -1,44 +1,28 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  googleId: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  profilePicture: {
-    type: String
-  },
-  // New profile fields
-  college: { type: String },
+  googleId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  profilePicture: { type: String },
+  collegeName: { type: String },
   degree: { type: String },
+  major: { type: String },
   currentStatus: { 
     type: String, 
     enum: ['Student', 'Job Seeker', 'Working Professional', 'Other'] 
   },
   currentRole: { type: String },
+  targetRole: { type: String },
   graduationYear: { type: String },
   location: { type: String },
   bio: { type: String },
-  linkedinUrl: { type: String },
-  githubUrl: { type: String },
-  profileCompleted: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  linkedin: { type: String },
+  github: { type: String },
+  portfolio: { type: String },
+  profileCompleted: { type: Boolean, default: false }
+}, {
+  timestamps: true
 });
 
 const User = mongoose.model('User', userSchema);

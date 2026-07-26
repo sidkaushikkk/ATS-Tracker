@@ -24,7 +24,7 @@ export const updateProfile = async (req, res) => {
     const updateData = req.body;
     
     // Check if mandatory fields are present
-    const mandatoryFields = ['name', 'college', 'currentStatus', 'currentRole', 'graduationYear', 'location'];
+    const mandatoryFields = ['name', 'collegeName', 'currentStatus', 'currentRole', 'graduationYear', 'location'];
     let isComplete = true;
     
     for (const field of mandatoryFields) {

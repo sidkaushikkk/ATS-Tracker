@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegFilePdf, FaCheckCircle, FaExchangeAlt } from "react-icons/fa";
 import UploadModel from "../components/UploadModel.jsx";
+import { useAuth } from "../lib/AuthContext.jsx";
 import "./UploadResume.css";
 
 export function UploadResume() {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [isUploading, setIsUploading] = useState(false);
@@ -14,8 +16,7 @@ export function UploadResume() {
   const handleProceed = async () => {
     if (selectedFile && selectedFile.fileObject) {
       setIsUploading(true);
-      const token = localStorage.getItem("token");
-      if (!token) {
+      if (!user) {
         alert("Please login first to analyze your resume.");
         setIsUploading(false);
         return;
@@ -28,9 +29,7 @@ export function UploadResume() {
         const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
         const res = await fetch(`${apiUrl}/analyze`, {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
+          credentials: 'include',
           body: formData,
         });
 

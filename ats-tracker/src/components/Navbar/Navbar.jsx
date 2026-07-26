@@ -1,20 +1,12 @@
-import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
+import { useAuth } from "../../lib/AuthContext";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
 
 function Navbar() {
-  const [user, setUser] = useState(null);
+  const { user, login, logout } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   const handleLoginSuccess = async (credentialResponse) => {
     try {
@@ -25,10 +17,8 @@ function Navbar() {
         body: JSON.stringify({ credential: credentialResponse.credential }),
       });
       const data = await res.json();
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setUser(data.user);
+      if (data.user) {
+        login(data.user);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -36,11 +26,8 @@ function Navbar() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    navigate("/");
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (

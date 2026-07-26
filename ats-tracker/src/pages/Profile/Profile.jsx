@@ -1,43 +1,46 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
+import { useAuth } from '../../lib/AuthContext';
 import './Profile.css';
 
 function Profile() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    college: '',
+    collegeName: '',
     degree: '',
+    major: '',
     currentStatus: '',
     currentRole: '',
+    targetRole: '',
     graduationYear: '',
     location: '',
     bio: '',
-    linkedinUrl: '',
-    githubUrl: ''
+    linkedin: '',
+    github: '',
+    portfolio: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/');
-        return;
-      }
+    if (!authLoading && !user) {
+      navigate('/');
+      return;
+    }
 
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        const res = await fetch(`${apiUrl}/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+    if (user) {
+      const fetchProfile = async () => {
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+          const res = await fetch(`${apiUrl}/profile`, {
+            credentials: 'include'
+          });
         
         if (res.ok) {
           const data = await res.json();
@@ -55,10 +58,11 @@ function Profile() {
       } finally {
         setLoading(false);
       }
-    };
+      };
 
-    fetchProfile();
-  }, [navigate]);
+      fetchProfile();
+    }
+  }, [user, authLoading, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,15 +77,14 @@ function Profile() {
     setSaving(true);
     setError(null);
 
-    const token = localStorage.getItem('token');
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
       const res = await fetch(`${apiUrl}/profile`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
       
@@ -100,7 +103,7 @@ function Profile() {
     }
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="profile-page">
         <Navbar />
@@ -147,12 +150,12 @@ function Profile() {
 
           <div className="form-row">
             <div className="form-group half-width">
-              <label htmlFor="college">College/University *</label>
+              <label htmlFor="collegeName">College/University *</label>
               <input
                 type="text"
-                id="college"
-                name="college"
-                value={formData.college || ''}
+                id="collegeName"
+                name="collegeName"
+                value={formData.collegeName || ''}
                 onChange={handleChange}
                 required
               />
@@ -163,8 +166,19 @@ function Profile() {
                 type="text"
                 id="degree"
                 name="degree"
-                placeholder="e.g. B.S. Computer Science"
+                placeholder="e.g. B.S."
                 value={formData.degree || ''}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="major">Major</label>
+              <input
+                type="text"
+                id="major"
+                name="major"
+                placeholder="e.g. Computer Science"
+                value={formData.major || ''}
                 onChange={handleChange}
               />
             </div>
@@ -188,7 +202,7 @@ function Profile() {
               </select>
             </div>
             <div className="form-group half-width">
-              <label htmlFor="currentRole">Current/Target Role *</label>
+              <label htmlFor="currentRole">Current Role *</label>
               <input
                 type="text"
                 id="currentRole"
@@ -197,6 +211,17 @@ function Profile() {
                 value={formData.currentRole || ''}
                 onChange={handleChange}
                 required
+              />
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="targetRole">Target Role</label>
+              <input
+                type="text"
+                id="targetRole"
+                name="targetRole"
+                placeholder="e.g. Senior Frontend Developer"
+                value={formData.targetRole || ''}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -241,22 +266,32 @@ function Profile() {
 
           <div className="form-row">
             <div className="form-group half-width">
-              <label htmlFor="linkedinUrl">LinkedIn URL</label>
+              <label htmlFor="linkedin">LinkedIn URL</label>
               <input
                 type="url"
-                id="linkedinUrl"
-                name="linkedinUrl"
-                value={formData.linkedinUrl || ''}
+                id="linkedin"
+                name="linkedin"
+                value={formData.linkedin || ''}
                 onChange={handleChange}
               />
             </div>
             <div className="form-group half-width">
-              <label htmlFor="githubUrl">GitHub/Portfolio URL</label>
+              <label htmlFor="github">GitHub URL</label>
               <input
                 type="url"
-                id="githubUrl"
-                name="githubUrl"
-                value={formData.githubUrl || ''}
+                id="github"
+                name="github"
+                value={formData.github || ''}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="portfolio">Portfolio URL</label>
+              <input
+                type="url"
+                id="portfolio"
+                name="portfolio"
+                value={formData.portfolio || ''}
                 onChange={handleChange}
               />
             </div>

@@ -32,5 +32,8 @@ const resumeAnalysisSchema = new mongoose.Schema({
   keyObservations: [String]
 });
 
+// Index for efficient dashboard queries
+resumeAnalysisSchema.index({ userId: 1, uploadDate: -1 });
+
 const ResumeAnalysis = mongoose.model('ResumeAnalysis', resumeAnalysisSchema);
 export default ResumeAnalysis;

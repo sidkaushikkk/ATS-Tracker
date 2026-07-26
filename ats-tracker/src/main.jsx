@@ -2,16 +2,19 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { AuthProvider } from './lib/AuthContext'
 import './index.css'
 import App from './App.jsx'
 
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '942272954043-iojhqs9833umf9dj3o9mqa48kon96is8.apps.googleusercontent.com';
+const CLIENT_ID = "889753066346-6g6nps12s02dve2mmsrsm2v2d65j9u5s.apps.googleusercontent.com";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
       <BrowserRouter>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
   </StrictMode>,

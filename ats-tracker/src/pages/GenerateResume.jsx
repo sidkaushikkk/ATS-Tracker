@@ -1,7 +1,8 @@
-import  { useState, useRef } from 'react';
-import {  Download,  AlertCircle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Download, AlertCircle } from 'lucide-react';
 import ResumeForm from '../components/ResumeForm';
 import ResumePreview from '../components/ResumePreview';
+import { useAuth } from '../lib/AuthContext';
 import logo from "../assets/logo.png";
 
 import './GenerateResume.css';
@@ -41,18 +42,76 @@ const initialResumeData = {
 };
 
 export default function App() {
+  const { user } = useAuth();
+  const [draftId, setDraftId] = useState(null);
+  const [saveStatus, setSaveStatus] = useState('');
+  const [isInitializing, setIsInitializing] = useState(true);
+
   // Central Resume State
-  const [resumeData, setResumeData] = useState(() => {
-    const saved = localStorage.getItem('ats_resume_data');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse local storage data', e);
-      }
+  const [resumeData, setResumeData] = useState(initialResumeData);
+
+  // Fetch initial draft
+  useEffect(() => {
+    if (user) {
+      const fetchDraft = async () => {
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+          const res = await fetch(`${apiUrl}/resume-drafts`, {
+            credentials: 'include'
+          });
+          if (res.ok) {
+            const drafts = await res.json();
+            if (drafts.length > 0) {
+              setDraftId(drafts[0]._id);
+              setResumeData(drafts[0].resumeData || initialResumeData);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching draft", error);
+        } finally {
+          setIsInitializing(false);
+        }
+      };
+      fetchDraft();
+    } else {
+      setIsInitializing(false);
     }
-    return initialResumeData;
-  });
+  }, [user]);
+
+  // Debounced auto-save
+  useEffect(() => {
+    if (isInitializing || !user) return;
+    
+    setSaveStatus('Saving...');
+    
+    const timeoutId = setTimeout(async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+        const url = draftId ? `${apiUrl}/resume-drafts/${draftId}` : `${apiUrl}/resume-drafts`;
+        const method = draftId ? 'PUT' : 'POST';
+        
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ resumeData, title: 'My Resume' })
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          if (!draftId) setDraftId(data._id);
+          setSaveStatus('Saved');
+        } else {
+          setSaveStatus('Error saving');
+        }
+      } catch (error) {
+        console.error("Error saving draft", error);
+        setSaveStatus('Error saving');
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [resumeData, user, draftId, isInitializing]);
 
 
   // PDF Generation loading state
@@ -303,10 +362,21 @@ export default function App() {
   };
 
   // Clear Form handler
-  const clearForm = () => {
+  const clearForm = async () => {
     if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
       setResumeData(initialResumeData);
-      localStorage.removeItem('ats_resume_data');
+      if (draftId && user) {
+        try {
+           const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+           await fetch(`${apiUrl}/resume-drafts/${draftId}`, {
+             method: 'DELETE',
+             credentials: 'include'
+           });
+           setDraftId(null);
+        } catch (error) {
+          console.error("Failed to delete draft", error);
+        }
+      }
     }
   };
 
@@ -442,6 +512,11 @@ export default function App() {
           <div className="preview-sticky-control glass-panel">
             <div className="preview-controls-left">
               <h3>Live Resume Preview</h3>
+              {saveStatus && (
+                <span className={`save-status ${saveStatus.includes('Error') ? 'error' : ''}`} style={{ fontSize: '0.85rem', color: saveStatus === 'Saved' ? 'var(--success-color, #10b981)' : 'var(--text-secondary, #64748b)' }}>
+                  {saveStatus}
+                </span>
+              )}
             </div>
             
             <button

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
+import { useAuth } from "../lib/AuthContext";
 import { FileText, Clock, TrendingUp, Edit, Award, Target, Activity } from "lucide-react";
 import "./Dashboard.css";
 
@@ -11,23 +12,22 @@ function Dashboard() {
     history: []
   });
   const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
-      }
+    if (!authLoading && !user) {
+      navigate("/");
+      return;
+    }
 
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
-        const res = await fetch(`${apiUrl}/dashboard`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+    if (user) {
+      const fetchDashboardData = async () => {
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+          const res = await fetch(`${apiUrl}/dashboard`, {
+            credentials: 'include'
+          });
         
         if (res.ok) {
           const data = await res.json();
@@ -45,20 +45,18 @@ function Dashboard() {
       } finally {
         setLoading(false);
       }
-    };
+      };
 
-    fetchDashboardData();
-  }, [navigate]);
+      fetchDashboardData();
+    }
+  }, [user, authLoading, navigate]);
 
   const handleOpenAnalysis = async (id) => {
     try {
-      const token = localStorage.getItem("token");
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
       
       const res = await fetch(`${apiUrl}/analysis/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        credentials: 'include'
       });
       
       if (res.ok) {
@@ -70,7 +68,7 @@ function Dashboard() {
     }
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="dashboard-page">
         <Navbar />
