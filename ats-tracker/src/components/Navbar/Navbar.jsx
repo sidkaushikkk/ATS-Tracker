@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../lib/AuthContext";
+import EmailLoginModal from "./EmailLoginModal";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
 
 function Navbar() {
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -62,19 +65,28 @@ function Navbar() {
             </button>
           </>
         ) : (
-          <div className="google-login-wrapper">
-            <GoogleLogin
-              onSuccess={handleLoginSuccess}
-              onError={() => console.error("Login failed from Google button")}
-              theme="outline"
-              size="large"
-              text="signin_with"
-              shape="rectangular"
-              width="260"
-            />
+          <div className="auth-buttons-wrapper">
+            <div className="google-login-wrapper">
+              <GoogleLogin
+                onSuccess={handleLoginSuccess}
+                onError={() => console.error("Login failed from Google button")}
+                theme="outline"
+                size="large"
+                text="signin_with"
+                shape="rectangular"
+                width="260"
+              />
+            </div>
+            <button 
+              className="login-with-gmail-btn"
+              onClick={() => setIsEmailModalOpen(true)}
+            >
+              Login with Gmail
+            </button>
           </div>
         )}
       </div>
+      <EmailLoginModal isOpen={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
     </nav>
   );
 }
