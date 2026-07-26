@@ -25,15 +25,26 @@ export const googleAuth = async (req, res) => {
 
   // 2. Database Operations
   try {
-    user = await User.findOne({ googleId });
-    if (!user) {
-      user = await User.create({ googleId, name, email, profilePicture });
+    user = await User.findOne({ email });
+    if (user) {
+      // Link Google account to existing user (e.g. from Email OTP)
+      let updated = false;
+      if (!user.googleId) { user.googleId = googleId; updated = true; }
+      if (!user.authProviders.includes('google')) { user.authProviders.push('google'); updated = true; }
+      if (!user.profilePicture && profilePicture) { user.profilePicture = profilePicture; updated = true; }
+      if (updated) await user.save();
+    } else {
+      user = await User.create({ 
+        googleId, 
+        name, 
+        email, 
+        profilePicture,
+        emailVerified: true,
+        authProviders: ['google']
+      });
     }
   } catch (dbError) {
-    console.error('[DB Error] Failed to find or create user.');
-    if (dbError.code === 11000) {
-      return res.status(409).json({ message: 'An account with this email already exists but is associated with a different sign-in method.' });
-    }
+    console.error('[DB Error] Failed to find or create user.', dbError);
     return res.status(500).json({ message: 'Database error during authentication.' });
   }
 
