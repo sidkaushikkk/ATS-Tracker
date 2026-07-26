@@ -154,7 +154,7 @@ const file = {
   const strokeDashoffset = arcLength - (arcLength * (scores.overall / 100));
 
   // Keyword Match Visbility Tracker
-  const [keywordSectionRef, isKeywordSectionVisible] = useIntersectionObserver();
+  const [keywordSectionRef] = useIntersectionObserver();
   const [jobRolesSectionRef, isJobRolesSectionVisible] = useIntersectionObserver();
 
   const keywords = analysisData?.matchedKeywords || [];
@@ -413,23 +413,13 @@ const file = {
               <TrendingUp size={24} className="section-hdr-icon" />
               <h2>ATS Keyword Match</h2>
             </div>
-            <span className="keyword-section-status">Optimized Match Rates</span>
           </div>
 
           <div className="keyword-bars-grid" ref={keywordSectionRef}>
-            {keywords.map((kw, index) => (
+            {keywords.map((kw) => (
               <div key={kw.name} className="keyword-bar-item">
                 <div className="kw-bar-labels">
                   <span className="kw-name">{kw.name}</span>
-                </div>
-                <div className="kw-progress-track">
-                  <div
-                    className="kw-progress-fill"
-                    style={{
-                      width: isKeywordSectionVisible ? "100%" : "0%",
-                      transition: `width 1.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 80}ms`
-                    }}
-                  ></div>
                 </div>
               </div>
             ))}

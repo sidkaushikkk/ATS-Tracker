@@ -600,46 +600,12 @@
 
 .keyword-bars-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   gap: 20px 32px;
-}
-
-.keyword-bar-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.kw-bar-labels {
-  display: flex;
-  justify-content: space-between;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
 }
 
 .kw-name {
   color: #334155;
-}
-
-.kw-value {
-  color: #2563eb;
-}
-
-.kw-progress-track {
-  width: 100%;
-  height: 8px;
-  background-color: #f1f5f9;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.kw-progress-fill {
-  height: 100%;
-  background-color: #2563eb;
-  border-radius: 4px;
-  width: 0;
-  /* transition will be set inline when section becomes visible */
 }
 
 /* SECTION 3: Resume Breakdown Scorecards */
