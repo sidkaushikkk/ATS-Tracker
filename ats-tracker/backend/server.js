@@ -1,7 +1,7 @@
+import 'dotenv/config'; // Must be first!
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 
 import authRoutes from './routes/auth.js';
@@ -10,7 +10,16 @@ import dashboardRoutes from './routes/dashboard.js';
 import profileRoutes from './routes/profile.js';
 import resumeDraftRoutes from './routes/resumeDrafts.js';
 
-dotenv.config();
+// Environment validation
+const requiredEnvVars = ['GOOGLE_CLIENT_ID', 'JWT_SECRET', 'MONGO_URI'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`[Server Error] Missing required environment variable: ${envVar}`);
+    process.exit(1);
+  }
+}
+
+console.log(`[Config] Frontend Origin allowed: ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
 
 const app = express();
 

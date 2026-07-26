@@ -6,7 +6,10 @@ import { AuthProvider } from './lib/AuthContext'
 import './index.css'
 import App from './App.jsx'
 
-const CLIENT_ID = "889753066346-6g6nps12s02dve2mmsrsm2v2d65j9u5s.apps.googleusercontent.com";
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+if (!CLIENT_ID) {
+  console.error("Missing VITE_GOOGLE_CLIENT_ID in environment variables");
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

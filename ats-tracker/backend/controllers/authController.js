@@ -6,34 +6,53 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const googleAuth = async (req, res) => {
   const { credential } = req.body;
+  let ticket;
+  
+  // 1. Verify Google Token
   try {
-    const ticket = await client.verifyIdToken({
+    ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    const payload = ticket.getPayload();
-    const { sub: googleId, name, email, picture: profilePicture } = payload;
+  } catch (error) {
+    console.error('[Auth Error] Google token verification failed. Check GOOGLE_CLIENT_ID and token validity.');
+    return res.status(401).json({ message: 'Google authentication rejected the token.' });
+  }
 
-    let user = await User.findOne({ googleId });
+  const payload = ticket.getPayload();
+  const { sub: googleId, name, email, picture: profilePicture } = payload;
+  let user;
+
+  // 2. Database Operations
+  try {
+    user = await User.findOne({ googleId });
     if (!user) {
       user = await User.create({ googleId, name, email, profilePicture });
     }
+  } catch (dbError) {
+    console.error('[DB Error] Failed to find or create user.');
+    if (dbError.code === 11000) {
+      return res.status(409).json({ message: 'An account with this email already exists but is associated with a different sign-in method.' });
+    }
+    return res.status(500).json({ message: 'Database error during authentication.' });
+  }
 
+  // 3. Cookie Creation
+  try {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    // Set HTTP-Only cookie
     const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('token', token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax', // Use 'none' if backend/frontend domains differ in prod
+      sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-origin HTTPS
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
     res.status(200).json({ user: { _id: user._id, name: user.name, email: user.email, profilePicture: user.profilePicture } });
-  } catch (error) {
-    console.error('Error verifying Google Token:', error);
-    res.status(401).json({ message: 'Invalid authentication token' });
+  } catch (cookieError) {
+    console.error('[Auth Error] Failed to generate JWT or set cookie.');
+    res.status(500).json({ message: 'Internal server error while setting up session.' });
   }
 };
 

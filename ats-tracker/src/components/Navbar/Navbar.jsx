@@ -14,6 +14,7 @@ function Navbar() {
       const res = await fetch(`${apiUrl}/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ credential: credentialResponse.credential }),
       });
       const data = await res.json();
