@@ -14,20 +14,55 @@ const resumeAnalysisSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  overallScore: {
-    type: Number,
-    required: true
+  // New fields for AI analysis
+  analysisType: { type: String, enum: ['application_match', 'general', 'fallback'], default: 'fallback' },
+  summary: { type: String },
+  sectionScores: {
+    contact: { type: Number, default: 0 },
+    experience: { type: Number, default: 0 },
+    skills: { type: Number, default: 0 },
+    education: { type: Number, default: 0 },
+    projects: { type: Number, default: 0 },
+    writingImpact: { type: Number, default: 0 },
+    atsReadability: { type: Number, default: 0 }
   },
+  strengths: [{
+    title: String,
+    evidence: String
+  }],
+  problems: [{
+    title: String,
+    severity: String,
+    evidence: String,
+    recommendation: String
+  }],
   matchedKeywords: [{
     name: String,
-    value: Number
+    evidence: String
+  }],
+  missingKeywords: [{
+    name: String,
+    importance: String
   }],
   recommendedRoles: [{
     role: String,
     match: Number,
-    level: String
+    reason: String
   }],
-  problems: [String],
+  bulletRewrites: [{
+    original: String,
+    suggested: String,
+    reason: String
+  }],
+  disclaimer: { type: String },
+
+  // Metadata
+  analysisSource: { type: String, enum: ['ai', 'fallback', 'failed'], default: 'fallback' },
+  aiModel: { type: String },
+  analysisVersion: { type: String },
+
+  // Legacy fallback fields for backward compatibility
+  overallScore: { type: Number, required: true },
   suggestions: [String],
   keyObservations: [String]
 });

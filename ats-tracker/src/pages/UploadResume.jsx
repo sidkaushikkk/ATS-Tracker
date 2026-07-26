@@ -9,6 +9,8 @@ export function UploadResume() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [jobDescription, setJobDescription] = useState("");
+  const [aiConsent, setAiConsent] = useState(false);
   
   const fileInputRef = useRef(null);
   const { user } = useAuth();
@@ -96,11 +98,19 @@ export function UploadResume() {
       return;
     }
 
+    if (!aiConsent) {
+      setError("You must consent to AI analysis to continue.");
+      return;
+    }
+
     setIsUploading(true);
     setError(null);
 
     const formData = new FormData();
     formData.append("resume", selectedFile.fileObject);
+    if (jobDescription.trim()) {
+      formData.append("jobDescription", jobDescription.trim());
+    }
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
@@ -217,6 +227,34 @@ export function UploadResume() {
                 </div>
               )}
 
+              <div className="job-description-section">
+                <label htmlFor="job-description" className="jd-label">
+                  Job Description (Optional)
+                </label>
+                <textarea
+                  id="job-description"
+                  className="jd-textarea"
+                  placeholder="Paste the job description here to get a tailored Application Match Score..."
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                  disabled={isUploading}
+                />
+              </div>
+
+              <div className="ai-consent-section">
+                <label className="ai-consent-label">
+                  <input
+                    type="checkbox"
+                    checked={aiConsent}
+                    onChange={(e) => setAiConsent(e.target.checked)}
+                    disabled={isUploading}
+                  />
+                  <span>
+                    I understand that my resume text and optional job description will be sent to Gemini for automated analysis.
+                  </span>
+                </label>
+              </div>
+
               {error && <div className="upload-error-message">{error}</div>}
 
               <div className="upload-file-list-actions">
@@ -229,7 +267,7 @@ export function UploadResume() {
                 </button>
                 <button
                   className="upload-choose-btn primary-theme-btn"
-                  disabled={!selectedFile || isUploading}
+                  disabled={!selectedFile || !aiConsent || isUploading}
                   onClick={handleAnalyze}
                 >
                   {isUploading ? "Analyzing resume..." : "Analyze Resume"}

@@ -10,7 +10,9 @@ import {
   UploadCloud, 
   ShieldCheck, 
   Briefcase, 
-  Layers 
+  Layers,
+  Search,
+  PenTool
 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./AnalyzePage.css";
@@ -22,7 +24,6 @@ function getMatchTone(match) {
   return "potential";
 }
 
-// Custom Intersection Observer Hook for animations
 function useIntersectionObserver(options = { threshold: 0.1 }) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
@@ -50,7 +51,6 @@ function useIntersectionObserver(options = { threshold: 0.1 }) {
   return [ref, isVisible];
 }
 
-// Reusable Scroll Animated Section Component
 function AnimatedSection({ children, className = "" }) {
   const [ref, isVisible] = useIntersectionObserver();
 
@@ -68,34 +68,29 @@ export default function AnalyzePage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-const selectedFile = location.state?.selectedFile;
-
-const fileObject =
-  selectedFile?.fileObject ?? location.state?.fileObject ?? null;
-
-const file = {
-  name: selectedFile?.name ?? location.state?.fileName ?? "Resume.pdf",
-  size: selectedFile?.size ?? "Unknown Size",
-};
+  const selectedFile = location.state?.selectedFile;
+  const fileObject = selectedFile?.fileObject ?? location.state?.fileObject ?? null;
+  const file = {
+    name: selectedFile?.name ?? location.state?.fileName ?? "Resume.pdf",
+    size: selectedFile?.size ?? "Unknown Size",
+  };
+  
   const analysisData = location.state?.analysisData;
-
   const [fileUrl, setFileUrl] = useState(null);
 
-  // Generate object URL for the raw fileObject if available
   useEffect(() => {
     if (!fileObject) {
       const cleanupId = window.requestAnimationFrame(() => setFileUrl(null));
       return () => window.cancelAnimationFrame(cleanupId);
     }
-
     const url = URL.createObjectURL(fileObject);
     const cleanupId = window.requestAnimationFrame(() => setFileUrl(url));
-
     return () => {
       window.cancelAnimationFrame(cleanupId);
       URL.revokeObjectURL(url);
     };
   }, [fileObject]);
+
   const [scores, setScores] = useState({
     overall: 0,
     formatting: 0,
@@ -105,29 +100,29 @@ const file = {
   });
   const [isAnalysisReady, setIsAnalysisReady] = useState(false);
 
-  // Animate the scores when page loads
   useEffect(() => {
     if (!analysisData) {
-      // If directly accessed without data, redirect to upload
       navigate("/upload-resume");
       return;
     }
 
+    const sScores = analysisData.sectionScores || {};
+    
+    // AI or fallback scores
     const targets = {
-      overall: analysisData.overallScore,
-      formatting: Math.min(100, analysisData.overallScore + 5),
-      keywords: Math.min(100, analysisData.overallScore + 2),
-      readability: Math.min(100, analysisData.overallScore + 8),
-      structure: Math.min(100, analysisData.overallScore + 3)
+      overall: analysisData.overallScore || 0,
+      formatting: sScores.contact || Math.min(100, (analysisData.overallScore || 0) + 5),
+      keywords: sScores.skills || Math.min(100, (analysisData.overallScore || 0) + 2),
+      readability: sScores.atsReadability || Math.min(100, (analysisData.overallScore || 0) + 8),
+      structure: sScores.experience || Math.min(100, (analysisData.overallScore || 0) + 3)
     };
 
-    const duration = 1600; // 1.6s duration
+    const duration = 1600;
     const startTime = performance.now();
 
     const animate = (now) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
       const easeProgress = progress * (2 - progress);
 
       setScores({
@@ -144,24 +139,33 @@ const file = {
         setIsAnalysisReady(true);
       }
     };
-
     requestAnimationFrame(animate);
   }, [analysisData, navigate]);
 
-  // Semicircular Arc Dash Offset calculation
-  // Total arc length of M 10 60 A 50 50 0 0 1 110 60 is exactly PI * r = 3.14159 * 50 = 157.08
   const arcLength = 157.08;
   const strokeDashoffset = arcLength - (arcLength * (scores.overall / 100));
 
-  // Keyword Match Visbility Tracker
   const [keywordSectionRef] = useIntersectionObserver();
   const [jobRolesSectionRef, isJobRolesSectionVisible] = useIntersectionObserver();
 
-  const keywords = analysisData?.matchedKeywords || [];
-  const suitableJobRoles = analysisData?.recommendedRoles || [];
-  const observations = analysisData?.keyObservations || [];
-  const problems = analysisData?.problems || [];
-  const suggestions = analysisData?.suggestions || [];
+  if (!analysisData) return null;
+
+  const isAI = analysisData.analysisSource === 'ai';
+  const scoreTypeLabel = analysisData.analysisType === 'application_match' ? 'Application Match Score' : 'General Resume Quality Score';
+
+  // AI lists
+  const strengths = analysisData.strengths || [];
+  const missingKeywords = analysisData.missingKeywords || [];
+  const bulletRewrites = analysisData.bulletRewrites || [];
+  
+  // Fallback lists
+  const observations = analysisData.keyObservations || [];
+  const problems = analysisData.problems || [];
+  const suggestions = analysisData.suggestions || [];
+  
+  // Shared lists
+  const keywords = analysisData.matchedKeywords || [];
+  const suitableJobRoles = analysisData.recommendedRoles || [];
 
   return (
     <div className="analyze-page-wrapper">
@@ -169,34 +173,26 @@ const file = {
 
       <div className="analyze-container">
         
-        {/* HERO SECTION: Split layout */}
+        {/* HERO SECTION */}
         <section className="analysis-hero-grid">
           
-          {/* LEFT PANEL: PDF Viewer Mockup */}
           <div className="document-viewer-card glass-panel">
             <div className="doc-viewer-header">
               <div className="doc-viewer-file-details">
                 <div className="file-icon-badge">PDF</div>
                 <div className="file-info-text">
-                  <h3 className="file-display-name" title={file.name}>
-                    {file.name}
-                  </h3>
+                  <h3 className="file-display-name" title={file.name}>{file.name}</h3>
                   <span className="file-display-size">{file.size}</span>
                 </div>
               </div>
             </div>
 
             <div className="doc-viewer-container">
-              {/* Scan Overlay Effect */}
               <div className={`moving-scan-line ${isAnalysisReady ? "is-analysis-ready" : ""}`}></div>
               <div className={`document-glow-overlay ${isAnalysisReady ? "is-analysis-ready" : ""}`}></div>
 
               {fileUrl ? (
-                <iframe 
-                  src={`${fileUrl}#toolbar=0&navpanes=0`} 
-                  className="pdf-iframe-viewer" 
-                  title="Resume Document Viewer" 
-                />
+                <iframe src={`${fileUrl}#toolbar=0&navpanes=0`} className="pdf-iframe-viewer" title="Viewer" />
               ) : (
                 <div className="pdf-preview-fallback">
                   <div className="fallback-doc-header">
@@ -208,19 +204,6 @@ const file = {
                     <div className="fallback-doc-block">
                       <div className="fallback-doc-section-title"></div>
                       <div className="fallback-doc-bar text-bar"></div>
-                      <div className="fallback-doc-bar text-bar"></div>
-                      <div className="fallback-doc-bar text-bar short"></div>
-                    </div>
-                    <div className="fallback-doc-block">
-                      <div className="fallback-doc-section-title"></div>
-                      <div className="fallback-doc-bar text-bar"></div>
-                      <div className="fallback-doc-bar text-bar"></div>
-                      <div className="fallback-doc-bar text-bar short"></div>
-                    </div>
-                    <div className="fallback-doc-block">
-                      <div className="fallback-doc-section-title"></div>
-                      <div className="fallback-doc-bar text-bar"></div>
-                      <div className="fallback-doc-bar text-bar short"></div>
                     </div>
                   </div>
                 </div>
@@ -228,11 +211,11 @@ const file = {
             </div>
           </div>
 
-          {/* RIGHT PANEL: ATS Gauge & Score Metrics */}
           <div className="score-details-card glass-panel">
-            <h2 className="score-panel-title">ATS Metrics Dashboard</h2>
+            <h2 className="score-panel-title">
+              {isAI ? '✨ AI Analysis Results' : '⚙️ Fallback Analysis Results'}
+            </h2>
 
-            {/* Semicircular Gauge */}
             <div className="gauge-outer-wrapper">
               <div className="gauge-ring-container">
                 <svg viewBox="0 0 120 70" className="gauge-arc-svg">
@@ -244,16 +227,7 @@ const file = {
                     </linearGradient>
                   </defs>
                   
-                  {/* Outer track */}
-                  <path
-                    d="M 10 60 A 50 50 0 0 1 110 60"
-                    fill="none"
-                    stroke="#eef2f6"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                  />
-                  
-                  {/* Colored progress arc */}
+                  <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" stroke="#eef2f6" strokeWidth="10" strokeLinecap="round" />
                   <path
                     d="M 10 60 A 50 50 0 0 1 110 60"
                     fill="none"
@@ -265,7 +239,6 @@ const file = {
                   />
                 </svg>
 
-                {/* Score numbers overlays */}
                 <div className="gauge-text-overlay">
                   <span className="gauge-number-value">{scores.overall}</span>
                   <span className="gauge-total-divider">/ 100</span>
@@ -273,22 +246,23 @@ const file = {
               </div>
 
               <div className="score-labels-group">
-                <h3 className="score-main-lbl">ATS Score</h3>
-                <span className="score-badge excellent-badge">Excellent Resume</span>
+                <h3 className="score-main-lbl">{scoreTypeLabel}</h3>
+                <span className={`score-badge ${getMatchTone(scores.overall)}-badge`}>
+                  {scores.overall >= 80 ? 'Excellent' : scores.overall >= 60 ? 'Good' : 'Needs Work'}
+                </span>
               </div>
             </div>
 
-            {/* Four metric cards */}
             <div className="metric-cards-grid">
               <div className="mini-metric-card">
-                <span className="mini-card-title">Formatting</span>
+                <span className="mini-card-title">{isAI ? 'Contact Info' : 'Formatting'}</span>
                 <div className="mini-card-score-row">
                   <span className="mini-card-num">{scores.formatting}%</span>
                   <span className="dot-indicator green"></span>
                 </div>
               </div>
               <div className="mini-metric-card">
-                <span className="mini-card-title">Keywords</span>
+                <span className="mini-card-title">Skills</span>
                 <div className="mini-card-score-row">
                   <span className="mini-card-num">{scores.keywords}%</span>
                   <span className="dot-indicator green"></span>
@@ -302,7 +276,7 @@ const file = {
                 </div>
               </div>
               <div className="mini-metric-card">
-                <span className="mini-card-title">Structure</span>
+                <span className="mini-card-title">Experience</span>
                 <div className="mini-card-score-row">
                   <span className="mini-card-num">{scores.structure}%</span>
                   <span className="dot-indicator green"></span>
@@ -310,38 +284,42 @@ const file = {
               </div>
             </div>
 
-            {/* Success indicator message */}
             <div className="analysis-status-strip">
               <div className="status-badge-circle">
                 <ShieldCheck size={20} className="status-checkmark" />
               </div>
               <div className="status-strip-text">
                 <p className="status-bold-msg">Resume successfully analyzed.</p>
-                <p className="status-sub-msg">Analysis completed successfully.</p>
+                <p className="status-sub-msg">Powered by {isAI ? 'Gemini 2.5 AI' : 'Rule-Based Engine'}.</p>
               </div>
             </div>
-
           </div>
         </section>
 
-        {/* SECTION 1: Key Observations, Problems & Suggestions */}
+        {/* SECTION 1: Insights & Problems */}
         <div className="analysis-details-grid">
           
           <AnimatedSection className="obs-col shadow-card-block">
             <div className="card-block-header green-theme">
               <CheckCircle size={22} className="block-icon" />
-              <h2>Key Observations</h2>
+              <h2>{isAI ? 'Key Strengths' : 'Key Observations'}</h2>
             </div>
             <ul className="observations-bullet-list">
-              {observations.map((obs, i) => (
+              {isAI ? strengths.map((str, i) => (
+                <li key={i}>
+                  <div className="bullet-circle success">✓</div>
+                  <span><strong>{str.title}:</strong> {str.evidence}</span>
+                </li>
+              )) : observations.map((obs, i) => (
                 <li key={i}>
                   <div className="bullet-circle success">✓</div>
                   <span>{obs}</span>
                 </li>
               ))}
-              {observations.length === 0 && <li><span>No specific observations found.</span></li>}
+              {(isAI ? strengths.length === 0 : observations.length === 0) && <li><span>No specific observations found.</span></li>}
             </ul>
           </AnimatedSection>
+
           <AnimatedSection className="obs-col shadow-card-block">
             <div className="card-block-header orange-theme">
               <AlertTriangle size={22} className="block-icon" />
@@ -351,37 +329,62 @@ const file = {
               {problems.map((prob, i) => (
                 <li key={i}>
                   <div className="bullet-circle warning">!</div>
-                  <span>{prob}</span>
+                  <span>
+                    <strong>{prob.title || 'Observation'} ({prob.severity || 'medium'}):</strong> {prob.evidence || prob}
+                    {prob.recommendation && <div><em>Fix: {prob.recommendation}</em></div>}
+                  </span>
                 </li>
               ))}
               {problems.length === 0 && <li><span>No major problems found!</span></li>}
             </ul>
           </AnimatedSection>
-          <AnimatedSection className="obs-col shadow-card-block">
-            <div className="card-block-header blue-theme">
-              <Lightbulb size={22} className="block-icon" />
-              <h2>Suggestions</h2>
-            </div>
-            <ul className="observations-bullet-list">
-              {suggestions.map((sugg, i) => (
-                <li key={i}>
-                  <div className="bullet-circle suggestion">ℹ</div>
-                  <span>{sugg}</span>
-                </li>
-              ))}
-              {suggestions.length === 0 && <li><span>No specific suggestions at this time.</span></li>}
-            </ul>
-          </AnimatedSection>
+
+          {isAI ? (
+            <AnimatedSection className="obs-col shadow-card-block">
+              <div className="card-block-header purple-theme">
+                <PenTool size={22} className="block-icon" />
+                <h2>Bullet Rewrites</h2>
+              </div>
+              <ul className="observations-bullet-list">
+                {bulletRewrites.map((rw, i) => (
+                  <li key={i}>
+                    <div className="bullet-circle suggestion">ℹ</div>
+                    <div>
+                      <div style={{ textDecoration: 'line-through', color: '#64748b' }}>{rw.original}</div>
+                      <div style={{ color: '#16a34a', marginTop: '4px' }}>✨ {rw.suggested}</div>
+                      <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>Reason: {rw.reason}</div>
+                    </div>
+                  </li>
+                ))}
+                {bulletRewrites.length === 0 && <li><span>No specific rewrites suggested.</span></li>}
+              </ul>
+            </AnimatedSection>
+          ) : (
+            <AnimatedSection className="obs-col shadow-card-block">
+              <div className="card-block-header blue-theme">
+                <Lightbulb size={22} className="block-icon" />
+                <h2>Suggestions</h2>
+              </div>
+              <ul className="observations-bullet-list">
+                {suggestions.map((sugg, i) => (
+                  <li key={i}>
+                    <div className="bullet-circle suggestion">ℹ</div>
+                    <span>{sugg}</span>
+                  </li>
+                ))}
+                {suggestions.length === 0 && <li><span>No specific suggestions at this time.</span></li>}
+              </ul>
+            </AnimatedSection>
+          )}
 
           <AnimatedSection className="obs-col shadow-card-block">
             <div className="card-block-header blue-theme">
               <Briefcase size={22} className="block-icon" />
-              <h2>Suitable Job Roles</h2>
+              <h2>{isAI ? 'Gemini Suggested Roles' : 'Suitable Job Roles'}</h2>
             </div>
             <div className="job-role-match-list" ref={jobRolesSectionRef}>
               {suitableJobRoles.map((jobRole, index) => {
                 const matchTone = getMatchTone(jobRole.match);
-
                 return (
                   <div className="job-role-match-item" key={jobRole.role}>
                     <div className="job-role-match-header">
@@ -397,10 +400,11 @@ const file = {
                         }}
                       ></div>
                     </div>
-                    <span className={`job-role-match-label ${matchTone}`}>{jobRole.level}</span>
+                    <span className={`job-role-match-label ${matchTone}`}>{jobRole.reason || jobRole.level}</span>
                   </div>
                 );
               })}
+              {suitableJobRoles.length === 0 && <div>No roles suggested.</div>}
             </div>
           </AnimatedSection>
 
@@ -424,58 +428,65 @@ const file = {
               </div>
             ))}
           </div>
+
+          {isAI && missingKeywords.length > 0 && (
+            <div style={{ marginTop: '24px' }}>
+              <div className="title-with-icon" style={{ marginBottom: '16px' }}>
+                <Search size={24} className="section-hdr-icon" style={{ color: '#ef4444' }} />
+                <h2 style={{ color: '#ef4444' }}>Missing Keywords</h2>
+              </div>
+              <div className="keyword-bars-grid">
+                {missingKeywords.map((kw) => (
+                  <div key={kw.name} className="keyword-bar-item" style={{ background: '#fef2f2', border: '1px solid #fee2e2' }}>
+                    <div className="kw-bar-labels">
+                      <span className="kw-name" style={{ color: '#b91c1c' }}>{kw.name}</span>
+                      <span style={{ fontSize: '12px', color: '#dc2626' }}>{kw.importance}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </AnimatedSection>
 
         {/* SECTION 3: Resume Breakdown */}
-        <AnimatedSection className="breakdown-section glass-panel">
-          <div className="title-with-icon">
-            <Layers size={24} className="section-hdr-icon" />
-            <h2>Resume Breakdown</h2>
-          </div>
-          
-          <div className="breakdown-cards-grid">
-            <div className="breakdown-card">
-              <span className="breakdown-card-num">9 <span className="slash-ten">/ 10</span></span>
-              <span className="breakdown-card-label">Education</span>
-              <div className="breakdown-meter"><div className="breakdown-fill green" style={{ width: "90%" }}></div></div>
+        {isAI && analysisData.sectionScores && (
+          <AnimatedSection className="breakdown-section glass-panel">
+            <div className="title-with-icon">
+              <Layers size={24} className="section-hdr-icon" />
+              <h2>Detailed Breakdown</h2>
             </div>
-            <div className="breakdown-card">
-              <span className="breakdown-card-num">10 <span className="slash-ten">/ 10</span></span>
-              <span className="breakdown-card-label">Projects</span>
-              <div className="breakdown-meter"><div className="breakdown-fill green" style={{ width: "100%" }}></div></div>
+            
+            <div className="breakdown-cards-grid">
+              {Object.entries(analysisData.sectionScores).map(([key, val]) => (
+                <div className="breakdown-card" key={key}>
+                  <span className="breakdown-card-num">{val} <span className="slash-ten">/ 100</span></span>
+                  <span className="breakdown-card-label" style={{ textTransform: 'capitalize' }}>
+                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                  </span>
+                  <div className="breakdown-meter">
+                    <div className={`breakdown-fill ${val >= 80 ? 'green' : val >= 60 ? 'orange' : 'red'}`} style={{ width: `${val}%` }}></div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="breakdown-card">
-              <span className="breakdown-card-num">9 <span className="slash-ten">/ 10</span></span>
-              <span className="breakdown-card-label">Skills</span>
-              <div className="breakdown-meter"><div className="breakdown-fill green" style={{ width: "90%" }}></div></div>
-            </div>
-            <div className="breakdown-card">
-              <span className="breakdown-card-num">7 <span className="slash-ten">/ 10</span></span>
-              <span className="breakdown-card-label">Experience</span>
-              <div className="breakdown-meter"><div className="breakdown-fill orange" style={{ width: "70%" }}></div></div>
-            </div>
-            <div className="breakdown-card">
-              <span className="breakdown-card-num">9 <span className="slash-ten">/ 10</span></span>
-              <span className="breakdown-card-label">Formatting</span>
-              <div className="breakdown-meter"><div className="breakdown-fill green" style={{ width: "90%" }}></div></div>
-            </div>
-            <div className="breakdown-card">
-              <span className="breakdown-card-num">7 <span className="slash-ten">/ 10</span></span>
-              <span className="breakdown-card-label">Impact</span>
-              <div className="breakdown-meter"><div className="breakdown-fill orange" style={{ width: "70%" }}></div></div>
-            </div>
-          </div>
-        </AnimatedSection>
+          </AnimatedSection>
+        )}
 
         {/* SECTION 4: Overall Recommendation */}
         <AnimatedSection className="recommendation-callout-card">
           <div className="recommendation-badge">
             <Award size={18} />
-            <span>Overall Recommendation</span>
+            <span>Overall Summary & Recommendation</span>
           </div>
           <p className="recommendation-description-paragraph">
-            "This resume is well structured and ATS-friendly. Adding quantified achievements, stronger keywords, and more impactful project descriptions can further improve its chances of passing ATS filters and attracting recruiters."
+            {analysisData.summary || "This resume has been analyzed using fallback metrics. Add more quantified achievements and relevant keywords to improve your score."}
           </p>
+          {isAI && analysisData.disclaimer && (
+            <p style={{ marginTop: '12px', fontSize: '13px', color: '#64748b', fontStyle: 'italic' }}>
+              {analysisData.disclaimer}
+            </p>
+          )}
         </AnimatedSection>
 
         {/* SECTION 5: Bottom Actions */}

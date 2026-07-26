@@ -337,3 +337,10 @@
   .upload-model-overlay { padding: 16px; }
   .upload-model-card { padding: 24px; }
 }
+
+.job-description-section { margin-top: 20px; text-align: left; }
+.jd-label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #334155; }
+.jd-textarea { width: 100%; min-height: 80px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; resize: vertical; font-family: inherit; font-size: 14px; }
+.ai-consent-section { margin-top: 16px; margin-bottom: 24px; text-align: left; }
+.ai-consent-label { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #64748b; cursor: pointer; }
+.ai-consent-label input { margin-top: 3px; cursor: pointer; }
