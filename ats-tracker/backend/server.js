@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/auth.js';
 import analyzeRoutes from './routes/analyze.js';
 import dashboardRoutes from './routes/dashboard.js';
+import profileRoutes from './routes/profile.js';
 
 dotenv.config();
 
@@ -23,10 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/analyze', analyzeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Add GET /api/analysis/:id here or in a separate route
 import { getAnalysis } from './controllers/analyzeController.js';
-app.get('/api/analysis/:id', getAnalysis);
+import { verifyToken } from './controllers/authController.js';
+app.get('/api/analysis/:id', verifyToken, getAnalysis);
 
 const PORT = process.env.PORT || 5001;
 

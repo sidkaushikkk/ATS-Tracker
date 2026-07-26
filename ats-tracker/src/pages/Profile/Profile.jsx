@@ -1,0 +1,283 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/Navbar/Navbar';
+import './Profile.css';
+
+function Profile() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    college: '',
+    degree: '',
+    currentStatus: '',
+    currentRole: '',
+    graduationYear: '',
+    location: '',
+    bio: '',
+    linkedinUrl: '',
+    githubUrl: ''
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/');
+        return;
+      }
+
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+        const res = await fetch(`${apiUrl}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          // Initialize form data with existing profile
+          setFormData(prev => ({
+            ...prev,
+            ...data
+          }));
+        } else {
+          setError('Failed to fetch profile.');
+        }
+      } catch (err) {
+        console.error('Error fetching profile', err);
+        setError('Error fetching profile.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+
+    const token = localStorage.getItem('token');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+      const res = await fetch(`${apiUrl}/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      if (res.ok) {
+        // Redirect to dashboard on success
+        navigate('/dashboard');
+      } else {
+        const errorData = await res.json();
+        setError(errorData.message || 'Failed to update profile.');
+      }
+    } catch (err) {
+      console.error('Error updating profile', err);
+      setError('An error occurred while saving.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="profile-page">
+        <Navbar />
+        <div className="profile-loading">Loading your profile...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="profile-page">
+      <Navbar />
+      <div className="profile-container">
+        <div className="profile-header">
+          <h1>Complete Your Profile</h1>
+          <p>Please provide your details to personalize your dashboard.</p>
+        </div>
+
+        {error && <div className="error-message">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="profile-form glass-panel">
+          <div className="form-group">
+            <label htmlFor="name">Full Name *</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name || ''}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email || ''}
+              disabled
+              className="disabled-input"
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group half-width">
+              <label htmlFor="college">College/University *</label>
+              <input
+                type="text"
+                id="college"
+                name="college"
+                value={formData.college || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="degree">Degree & Major</label>
+              <input
+                type="text"
+                id="degree"
+                name="degree"
+                placeholder="e.g. B.S. Computer Science"
+                value={formData.degree || ''}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group half-width">
+              <label htmlFor="currentStatus">Current Status *</label>
+              <select
+                id="currentStatus"
+                name="currentStatus"
+                value={formData.currentStatus || ''}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>Select Status</option>
+                <option value="Student">Student</option>
+                <option value="Job Seeker">Job Seeker</option>
+                <option value="Working Professional">Working Professional</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="currentRole">Current/Target Role *</label>
+              <input
+                type="text"
+                id="currentRole"
+                name="currentRole"
+                placeholder="e.g. Frontend Developer"
+                value={formData.currentRole || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group half-width">
+              <label htmlFor="graduationYear">Graduation Year *</label>
+              <input
+                type="text"
+                id="graduationYear"
+                name="graduationYear"
+                placeholder="e.g. 2024"
+                value={formData.graduationYear || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="location">Location *</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                placeholder="City, State"
+                value={formData.location || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="bio">Short Career Goal/Bio</label>
+            <textarea
+              id="bio"
+              name="bio"
+              rows="3"
+              value={formData.bio || ''}
+              onChange={handleChange}
+            ></textarea>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group half-width">
+              <label htmlFor="linkedinUrl">LinkedIn URL</label>
+              <input
+                type="url"
+                id="linkedinUrl"
+                name="linkedinUrl"
+                value={formData.linkedinUrl || ''}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group half-width">
+              <label htmlFor="githubUrl">GitHub/Portfolio URL</label>
+              <input
+                type="url"
+                id="githubUrl"
+                name="githubUrl"
+                value={formData.githubUrl || ''}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={() => navigate('/dashboard')}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="save-btn" disabled={saving}>
+              {saving ? 'Saving...' : 'Save Profile'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default Profile;

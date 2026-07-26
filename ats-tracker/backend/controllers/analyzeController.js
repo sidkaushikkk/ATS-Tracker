@@ -48,6 +48,12 @@ export const getAnalysis = async (req, res) => {
     if (!analysis) {
       return res.status(404).json({ message: 'Analysis not found' });
     }
+
+    // Ensure the analysis belongs to the user requesting it
+    if (analysis.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to view this analysis' });
+    }
+
     res.status(200).json(analysis);
   } catch (error) {
     console.error('Error fetching analysis:', error);
