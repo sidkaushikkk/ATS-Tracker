@@ -60,26 +60,15 @@
     display:flex;
     gap:15px;
     border-radius:30px;
-    background: rgb(100, 106, 111);
-    color:#173f76;
+    color:#011532;
     font-weight:600;;
     margin-left: auto;
     cursor:pointer;
     transition:.3s;
 }
 
-.buttons:hover{
-    color:white;
-    box-shadow:0 8px 18px rgba(148, 60, 60, 0.15);
-}
-
-a{
-    color : white ;
-    text-decoration: none;
-}
 
 .google-login-wrapper {
-    /* height: 50px;Chane= */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,9 +115,7 @@ a{
         justify-content: center;
         gap: 15px;
     }
-
-
-
+    
     .buttons {
         width: 100%;
         justify-content: center;

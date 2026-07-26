@@ -6,7 +6,7 @@
 }
 
 .profile-container {
-  max-width: 800px;
+  max-width: 950px;
   margin: 0 auto;
   padding: 2rem;
   margin-top: 2rem;
@@ -26,6 +26,7 @@
 }
 
 .profile-header p {
+  text-align: center;
   color: #94a3b8;
   font-size: 1.1rem;
 }
