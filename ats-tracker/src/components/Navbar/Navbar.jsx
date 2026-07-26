@@ -38,7 +38,7 @@ function Navbar() {
           <img src={logo} alt="logo" />
         </Link>
       </div>
-
+      <div className="nav-button">
       <ul className="nav-links">
         <li>
           <Link to="/upload-resume">Resume Analyzer</Link>
@@ -50,7 +50,7 @@ function Navbar() {
           <a href="/about-ats.html">ATS</a>
         </li>
       </ul>
-
+      </div>
       <div className="buttons">
         {user ? (
           <>
@@ -62,12 +62,17 @@ function Navbar() {
             </button>
           </>
         ) : (
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-          />
+          <div className="google-login-wrapper">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={() => console.error("Login failed from Google button")}
+              theme="outline"
+              size="large"
+              text="signin_with"
+              shape="rectangular"
+              width="260"
+            />
+          </div>
         )}
       </div>
     </nav>

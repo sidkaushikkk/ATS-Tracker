@@ -9,7 +9,7 @@
     height:85px;
 
     display:flex;
-    justify-content:space-between;
+    justify-content: flex-start;
     align-items:center;
 
     padding:0 70px;
@@ -27,36 +27,43 @@
 .nav-links{
     display:flex;
     align-items:center;
-    gap:40px;
 
     list-style:none;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: left;
 }
 
 .nav-links a{
     display:flex;
     align-items:center;
     gap:5px;
+    padding: 10px 0;
 
     cursor:pointer;
     font-weight:600;
     color: white;
 
     position:relative;
-    padding:30px 0;
+    /* padding:30px 0; */
 }
 
 .nav-links a:hover{
     color:#ff5b57;
 }
 
+.nav-button{
+    margin-left: 100px;
+}
+
 .buttons{
     display:flex;
     gap:15px;
     border-radius:30px;
-    background: rgb(6, 36, 68);
+    background: rgb(100, 106, 111);
     color:#173f76;
     font-weight:600;;
-
+    margin-left: auto;
     cursor:pointer;
     transition:.3s;
 }
@@ -71,12 +78,65 @@ a{
     text-decoration: none;
 }
 
-.login-personal, .login-collegeMail , .register {
-    font-size: 80%;
-    font-weight : 900;
+.google-login-wrapper {
+    /* height: 50px;Chane= */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #d3d1e1;
+    border-radius: 20px;
+    min-width: 270px;
+    transition: outline 0.2s ease;
 }
 
-.login-personal:hover , .login-collegeMail:hover , .register:hover {
-    background-color: rgb(123, 143, 159);
-    scale:1.1;
+.google-login-wrapper > div {
+    width: 100% !important;
+}
+
+.google-login-wrapper button,
+.google-login-wrapper [role="button"],
+.google-login-wrapper div[role="button"] {
+    background: #d3d1e1 !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+    padding: 10px 16px !important;
+    font-family: Georgia, serif !important;
+    font-size: 18px !important;
+}
+
+.google-login-wrapper button img,
+.google-login-wrapper [role="button"] img,
+.google-login-wrapper div[role="button"] img {
+    width: 24px !important;
+    height: 24px !important;
+    transform: scale(1.2) !important;
+}
+
+.google-login-wrapper:focus-within {
+    outline: 2px solid #ff5b57;
+    outline-offset: 4px;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        height: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+
+
+    .buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .google-login-wrapper {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
 }
