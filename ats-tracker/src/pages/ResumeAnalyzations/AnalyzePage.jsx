@@ -15,14 +15,6 @@ import {
 import Navbar from "../../components/Navbar/Navbar";
 import "./AnalyzePage.css";
 
-const suitableJobRoles = [
-  { role: "Frontend Developer", match: 94, level: "Excellent Match" },
-  { role: "Full Stack Developer", match: 89, level: "Strong Match" },
-  { role: "React Developer", match: 87, level: "Strong Match" },
-  { role: "UI Engineer", match: 82, level: "Strong Match" },
-  { role: "Software Engineer", match: 78, level: "Good Match" }
-];
-
 function getMatchTone(match) {
   if (match >= 90) return "excellent";
   if (match >= 80) return "strong";
@@ -53,7 +45,7 @@ function useIntersectionObserver(options = { threshold: 0.1 }) {
         observer.unobserve(current);
       }
     };
-  }, []);
+  });
 
   return [ref, isVisible];
 }
@@ -76,27 +68,34 @@ export default function AnalyzePage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const file = location.state?.selectedFile || {
-    name: location.state?.fileName || "Resume.pdf",
-    size: "Unknown Size",
-    fileObject: location.state?.fileObject || null
-  };
+const selectedFile = location.state?.selectedFile;
 
+const fileObject =
+  selectedFile?.fileObject ?? location.state?.fileObject ?? null;
+
+const file = {
+  name: selectedFile?.name ?? location.state?.fileName ?? "Resume.pdf",
+  size: selectedFile?.size ?? "Unknown Size",
+};
   const analysisData = location.state?.analysisData;
 
   const [fileUrl, setFileUrl] = useState(null);
 
   // Generate object URL for the raw fileObject if available
   useEffect(() => {
-    if (file?.fileObject) {
-      const url = URL.createObjectURL(file.fileObject);
-      setFileUrl(url);
-      return () => {
-        URL.revokeObjectURL(url);
-      };
+    if (!fileObject) {
+      const cleanupId = window.requestAnimationFrame(() => setFileUrl(null));
+      return () => window.cancelAnimationFrame(cleanupId);
     }
-  }, [file]);
 
+    const url = URL.createObjectURL(fileObject);
+    const cleanupId = window.requestAnimationFrame(() => setFileUrl(url));
+
+    return () => {
+      window.cancelAnimationFrame(cleanupId);
+      URL.revokeObjectURL(url);
+    };
+  }, [fileObject]);
   const [scores, setScores] = useState({
     overall: 0,
     formatting: 0,
