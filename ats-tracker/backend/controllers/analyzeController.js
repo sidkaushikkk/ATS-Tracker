@@ -50,7 +50,7 @@ export const getAnalysis = async (req, res) => {
     }
 
     // Ensure the analysis belongs to the user requesting it
-    if (analysis.userId !== req.user.id) {
+    if (analysis.userId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to view this analysis' });
     }
 
