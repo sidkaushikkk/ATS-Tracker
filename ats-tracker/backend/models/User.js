@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  googleId: { type: String, required: true, unique: true },
+  googleId: { type: String, sparse: true, unique: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  emailVerified: { type: Boolean, default: false },
+  authProviders: { type: [String], default: [] },
   profilePicture: { type: String },
   collegeName: { type: String },
   degree: { type: String },
