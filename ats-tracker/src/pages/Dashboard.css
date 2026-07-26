@@ -289,58 +289,6 @@
   color: #1e293b;
 }
 
-/* Metrics Section */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.metric-card {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: whitesmoke;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-}
-
-.metric-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-}
-
-.metric-icon.blue { background: #eff6ff; color: #3b82f6; }
-.metric-icon.purple { background: #faf5ff; color: #a855f7; }
-.metric-icon.green { background: #f0fdf4; color: #22c55e; }
-.metric-icon.gold { background: #fefce8; color: #eab308; }
-
-.metric-content h3 {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
-
-.metric-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.metric-suffix {
-  font-size: 0.9rem;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import { useAuth } from "../lib/AuthContext";
-import { FileText, Clock, TrendingUp, Edit, Award, Target, Activity, MapPin, GraduationCap, Briefcase, Link, Code, Globe, Mail } from "lucide-react";
+import { FileText, Clock, TrendingUp, Edit, MapPin, GraduationCap, Briefcase, Link, Code, Globe, Mail } from "lucide-react";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -76,7 +76,7 @@ function Dashboard() {
     );
   }
 
-  const { profile, metrics, history } = dashboardData;
+  const { profile, history } = dashboardData;
 
   return (
     <div className="dashboard-page">
@@ -160,40 +160,6 @@ function Dashboard() {
                 )}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Metrics Section */}
-        {metrics && (
-          <div className="metrics-grid">
-            <div className="metric-card glass-panel">
-              <div className="metric-icon blue"><FileText size={24} /></div>
-              <div className="metric-content">
-                <h3>Resumes Analyzed</h3>
-                <p className="metric-value">{metrics.resumesAnalyzed}</p>
-              </div>
-            </div>
-            <div className="metric-card glass-panel">
-              <div className="metric-icon purple"><Activity size={24} /></div>
-              <div className="metric-content">
-                <h3>Latest Score</h3>
-                <p className="metric-value">{metrics.latestScore}<span className="metric-suffix">/100</span></p>
-              </div>
-            </div>
-            <div className="metric-card glass-panel">
-              <div className="metric-icon green"><Target size={24} /></div>
-              <div className="metric-content">
-                <h3>Average Score</h3>
-                <p className="metric-value">{metrics.averageScore}<span className="metric-suffix">/100</span></p>
-              </div>
-            </div>
-            <div className="metric-card glass-panel">
-              <div className="metric-icon gold"><Award size={24} /></div>
-              <div className="metric-content">
-                <h3>Best Score</h3>
-                <p className="metric-value">{metrics.bestScore}<span className="metric-suffix">/100</span></p>
-              </div>
-            </div>
           </div>
         )}
 
