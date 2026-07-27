@@ -85,7 +85,7 @@ function Profile() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      if (file.size > 5 * 1024 * 1024) {
         setError("Image size must be less than 2MB.");
         return;
       }
@@ -200,7 +200,7 @@ function Profile() {
 
           <div className="form-row">
             <div className="form-group half-width">
-              <label htmlFor="collegeName">College/University *</label>
+              <label htmlFor="collegeName">College/University/Company *</label>
               <input
                 type="text"
                 id="collegeName"
@@ -211,7 +211,7 @@ function Profile() {
               />
             </div>
             <div className="form-group half-width">
-              <label htmlFor="degree">Degree & Major</label>
+              <label htmlFor="degree">Degree </label>
               <input
                 type="text"
                 id="degree"
