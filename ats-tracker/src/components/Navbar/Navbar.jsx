@@ -77,12 +77,6 @@ function Navbar() {
                 width="260"
               />
             </div>
-            <button 
-              className="login-with-gmail-btn"
-              onClick={() => setIsEmailModalOpen(true)}
-            >
-              Login with Gmail
-            </button>
           </div>
         )}
       </div>

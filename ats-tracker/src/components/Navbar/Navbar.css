@@ -67,22 +67,6 @@
     transition:.3s;
 }
 
-
-.google-login-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: #d3d1e1;
-    border-radius: 20px;
-    min-width: 270px;
-    transition: outline 0.2s ease;
-}
-
-.google-login-wrapper > div {
-    width: 100% !important;
-}
-
 .google-login-wrapper button,
 .google-login-wrapper [role="button"],
 .google-login-wrapper div[role="button"] {
@@ -113,28 +97,6 @@
     gap: 12px;
 }
 
-.login-with-gmail-btn {
-    background: #d3d1e1;
-    color: #3C4043;
-    font-family:Google Sans, arial, sans-serif;
-    font-size: 18px;
-    font-weight: 500;
-    padding: 10px 24px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    height: 40px;
-    width : 270px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.login-with-gmail-btn:hover {
-    background: #e2e8f0;
-    color: rgba(0, 0, 0, 0.8);
-}
 
 @media (max-width: 768px) {
     .navbar {
