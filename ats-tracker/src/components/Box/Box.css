@@ -2,18 +2,18 @@
 
 .Box{
     width : 100%;
-    height: 750px;
+    height: 675px;
   background: #d3d1e1;
     border-radius: 0 0 20px 20px;
     position: relative;
-    margin-top : 85px;
+    margin-top : 76px;
 }
 
 .content{
-    height : 500px;
+    height : 450px;
     color : black;
-    width : 700px;
-    font-size: 40px;
+    width : 630px;
+    font-size: 36px;
     font-family: 'Times New Roman', Times, serif;
 
     position: relative;
@@ -22,8 +22,8 @@
 }
 h2{
     line-height: 1.2;
-    width: 600px;
-    margin-left: 45px;
+    width: 540px;
+    margin-left: 40px;
     text-align: left;
     font-weight: bold;
 }
@@ -60,18 +60,18 @@ animation: type1 4s steps(22) infinite;
 
 .highlight{
     font-family: "Times New Roman" , sans-serif;
-    font-size: 48px;
+    font-size: 43px;
     color: #7f390b;
     font-weight: bold;
 }
 
 
 p{
-    margin-left: 40px;
-    margin-bottom: 40px;
-    width : 600px;
+    margin-left: 36px;
+    margin-bottom: 36px;
+    width : 540px;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
     color:black;
     font-family: "Manrope", sans-serif;
 }
@@ -80,11 +80,11 @@ p{
     color: #7f390b;
 }
 .genAnalysis-button , .abtATS-button{
-    margin-right : 50px;
+    margin-right : 45px;
     font-size: 50%;
-    padding:12px 22px;
-    height: 70px;
-    width : 600px;
+    padding:11px 20px;
+    height: 63px;
+    width : 540px;
 
     border:2px solid #173f76;
     border-radius:30px;
@@ -114,9 +114,9 @@ button:hover{
     font-family :Georgia, 'Times New Roman', Times, serif ;
     font-weight: lighter;
     position: relative;
-    top : 30px;
+    top : 27px;
 
-    width : 700px;
+    width : 630px;
 }
 
 button{
@@ -142,23 +142,23 @@ button{
 .generate-resume{
     position: relative;
     width: 100%;
-    width : 700px;
+    width : 630px;
     align-content: center;
 }
 
 .ats-image{
     background-color: aquamarine;
     position : absolute ;
-    top : 250px;
-    left : 740px;
+    top : 225px;
+    left : 666px;
     height: 60%;
     width: 50%;
 }
 
 .image {
     position: absolute;
-    top: 100px;
-    left: 740px;
+    top: 90px;
+    left: 666px;
     height: 80%;
     width: 50%;
     background-color: transparent;

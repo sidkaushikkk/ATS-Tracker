@@ -11,10 +11,10 @@
 
 /* Container spacing layout */
 .analyze-container {
-  max-width: 1300px;
+  max-width: 1170px;
   width: 100%;
   margin: 0 auto;
-  padding: 120px 24px 80px 24px;
+  padding: 108px 22px 72px 22px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -285,8 +285,8 @@
 
 .gauge-ring-container {
   position: relative;
-  width: 240px;
-  height: 130px;
+  width: 216px;
+  height: 117px;
 }
 
 .gauge-arc-svg {
@@ -306,7 +306,7 @@
 
 .gauge-number-value {
   font-family: 'Outfit', sans-serif;
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 800;
   color: #0f172a;
   line-height: 1;
