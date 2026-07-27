@@ -95,7 +95,7 @@ body {
 
 /* Glassmorphism & Card styling */
 .glass-panel {
-    background: var(--bg-card);
+    background: rgb(93, 93, 158) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
@@ -194,8 +194,8 @@ body {
 }
 
 .btn-primary {
-    background-color: rgb(42,42,114);
-    color: #ffffff;
+    background-color: rgb(237, 237, 240);
+    color: black;
 }
 
 .btn-primary:hover {
@@ -205,6 +205,7 @@ body {
 }
 
 .btn-secondary {
+    width: 120px;
     background-color: rgb(42,42,114);
     border-color: var(--accent-border);
     color: white;
