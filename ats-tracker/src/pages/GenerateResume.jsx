@@ -101,7 +101,7 @@ export default function App() {
         if (res.ok) {
           const data = await res.json();
           if (!draftId) setDraftId(data._id);
-          setSaveStatus('Saved');
+          setSaveStatus('');
         } else {
           setSaveStatus('Error saving');
         }
