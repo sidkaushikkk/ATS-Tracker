@@ -74,17 +74,18 @@ export default function App() {
       };
       fetchDraft();
     } else {
-      setIsInitializing(false);
+      // Avoid calling setState synchronously within an effect to prevent cascading renders
+      // Schedule the state update asynchronously
+      setTimeout(() => setIsInitializing(false), 0);
     }
   }, [user]);
 
   // Debounced auto-save
   useEffect(() => {
     if (isInitializing || !user) return;
-    
-    setSaveStatus('Saving...');
-    
+
     const timeoutId = setTimeout(async () => {
+      setSaveStatus('Saving...');
       try {
         const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
         const url = draftId ? `${apiUrl}/resume-drafts/${draftId}` : `${apiUrl}/resume-drafts`;
