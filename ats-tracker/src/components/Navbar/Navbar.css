@@ -67,36 +67,6 @@
     transition:.3s;
 }
 
-.google-login-wrapper button,
-.google-login-wrapper [role="button"],
-.google-login-wrapper div[role="button"] {
-    background: #d3d1e1 !important;
-    border-radius: 20px !important;
-    box-shadow: none !important;
-    padding: 10px 16px !important;
-    font-family: Georgia, serif !important;
-    font-size: 18px !important;
-}
-
-.google-login-wrapper button img,
-.google-login-wrapper [role="button"] img,
-.google-login-wrapper div[role="button"] img {
-    width: 24px !important;
-    height: 24px !important;
-    transform: scale(1.2) !important;
-}
-
-.google-login-wrapper:focus-within {
-    outline: 2px solid #ff5b57;
-    outline-offset: 4px;
-}
-
-.auth-buttons-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
 
 @media (max-width: 768px) {
     .navbar {

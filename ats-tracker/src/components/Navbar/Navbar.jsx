@@ -73,8 +73,8 @@ function Navbar() {
                 theme="outline"
                 size="large"
                 text="signin_with"
-                shape="rectangular"
-                width="260"
+                shape="pill"
+                width="220"
               />
             </div>
           </div>
