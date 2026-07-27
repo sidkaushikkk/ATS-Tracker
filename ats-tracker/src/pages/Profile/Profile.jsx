@@ -200,7 +200,7 @@ function Profile() {
 
           <div className="form-row">
             <div className="form-group half-width">
-              <label htmlFor="collegeName">College/University/Company *</label>
+              <label htmlFor="collegeName">College/University*</label>
               <input
                 type="text"
                 id="collegeName"
