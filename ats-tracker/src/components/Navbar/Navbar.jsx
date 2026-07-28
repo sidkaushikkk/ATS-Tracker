@@ -69,7 +69,7 @@ function Navbar() {
                 theme="outline"
                 size="large"
                 text="signin_with"
-                shape="pill"
+                shape="rectangular"
                 width="220"
                 locale="en"
                 logo_alignment="left"
