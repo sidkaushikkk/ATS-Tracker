@@ -1,13 +1,10 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../lib/AuthContext";
-import EmailLoginModal from "./EmailLoginModal";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
 
 function Navbar() {
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -80,7 +77,6 @@ function Navbar() {
           </div>
         )}
       </div>
-      <EmailLoginModal isOpen={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
     </nav>
   );
 }
