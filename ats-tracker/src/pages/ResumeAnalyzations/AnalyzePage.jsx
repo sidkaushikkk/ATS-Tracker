@@ -308,7 +308,6 @@ export default function AnalyzePage() {
               </div>
               <div className="status-strip-text">
                 <p className="status-bold-msg">Resume successfully analyzed.</p>
-                <p className="status-sub-msg">Powered by Gemini AI.</p>
               </div>
             </div>
           </div>
