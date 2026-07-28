@@ -30,8 +30,7 @@ const AnalysisSchema = z.object({
     evidence: z.string().catch("")
   })).max(15),
   missingKeywords: z.array(z.object({
-    name: z.string().catch("Keyword"),
-    importance: z.string().catch("medium")
+    name: z.string().catch("Keyword")
   })).max(15),
   recommendedRoles: z.array(z.object({
     role: z.string().catch("Role"),
@@ -86,6 +85,7 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
     5. Provide specific, actionable, truthful suggestions.
     6. All numeric scores must be integers from 0 to 100.
     7. KEEP ALL RESPONSES CONCISE AND PROFESSIONAL. All titles must be under 10 words. All evidence and descriptions must be brief (1-2 sentences max). Never output repetitive phrases or rambling text.
+    8. Missing keywords are provided purely as helpful suggestions. Do NOT use missing keywords to penalize, deduct points from, or weigh down overall or section scores.
     
     Resume Text:
     """
@@ -170,8 +170,7 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            name: { type: Type.STRING, description: "Missing keyword name (1-3 words)." },
-            importance: { type: Type.STRING, description: "'high' or 'medium'" }
+            name: { type: Type.STRING, description: "Missing keyword name (1-3 words)." }
           }
         }
       },
@@ -264,8 +263,7 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
     }));
 
     const sanitizedMissingKeywords = (validatedResult.missingKeywords || []).map(k => ({
-      name: sanitize(k.name, 60),
-      importance: k.importance || 'medium'
+      name: sanitize(k.name, 60)
     }));
 
     const sanitizedRecommendedRoles = (validatedResult.recommendedRoles || []).map(r => ({

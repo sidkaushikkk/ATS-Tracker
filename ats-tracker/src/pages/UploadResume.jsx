@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle, FaLock } from "react-icons/fa";
-import { Sparkles, CheckCircle2, Loader2, FileText, SearchCheck, BrainCircuit, Award } from "lucide-react";
+import { CheckCircle2, Loader2, FileText, SearchCheck, BrainCircuit, Award } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../lib/AuthContext.jsx";
 import "./UploadResume.css";
@@ -263,12 +263,8 @@ export function UploadResume() {
               
               {isUploading ? (
                 <div className="analysis-loading-card">
-                  <div className="loading-badge">
-                    <Sparkles className="sparkle-icon glowing" />
-                    <span>AI Resume Engine Active</span>
-                  </div>
 
-                  <h2 className="loading-title">Analyzing Your Resume</h2>
+                  <h2 className="loading-title">Analyzing Your Resume</h2><br/>
                   <p className="loading-filename">
                     Target File: <span className="file-pill-name">{selectedFile?.name}</span>
                   </p>
@@ -313,7 +309,6 @@ export function UploadResume() {
 
                   <div className="ats-tip-box">
                     <div className="tip-header">
-                      <Sparkles className="tip-sparkle" />
                       <span>ATS Pro Tip</span>
                     </div>
                     <p className="tip-content" key={tipIndex}>
@@ -413,7 +408,6 @@ export function UploadResume() {
                   {showLoginPrompt && !user && (
                     <div className="unauth-login-card" role="region" aria-label="Authentication Required">
                       <div className="unauth-card-header">
-                        <FaLock className="unauth-lock-icon" />
                         <h3 className="unauth-card-title">Login Required</h3>
                       </div>
                       <p className="unauth-card-body">

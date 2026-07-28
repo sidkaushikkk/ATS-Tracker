@@ -431,10 +431,9 @@ export default function AnalyzePage() {
               </div>
               <div className="keyword-bars-grid">
                 {missingKeywords.map((kw) => (
-                  <div key={kw.name} className="keyword-bar-item" style={{ background: '#fef2f2', border: '1px solid #fee2e2' }}>
+                  <div key={kw.name} className="keyword-bar-item" style={{ background: '#fef2f2'}}>
                     <div className="kw-bar-labels">
                       <span className="kw-name" style={{ color: '#b91c1c' }}>{kw.name}</span>
-                      <span style={{ fontSize: '12px', color: '#dc2626' }}>{kw.importance}</span>
                     </div>
                   </div>
                 ))}
