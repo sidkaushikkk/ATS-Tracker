@@ -1,9 +1,25 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle, FaLock } from "react-icons/fa";
+import { Sparkles, CheckCircle2, Loader2, FileText, SearchCheck, BrainCircuit, Award } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../lib/AuthContext.jsx";
 import "./UploadResume.css";
+
+const ANALYSIS_STAGES = [
+  { id: 1, label: "Extracting document structure & metadata...", Icon: FileText },
+  { id: 2, label: "Scanning ATS keywords & density...", Icon: SearchCheck },
+  { id: 3, label: "Evaluating formatting, impact & sections...", Icon: BrainCircuit },
+  { id: 4, label: "Formulating AI score & recommendations...", Icon: Award },
+];
+
+const ATS_TIPS = [
+  "Over 75% of resumes are filtered out by ATS before a hiring manager sees them.",
+  "Using standard section headings like 'Work Experience' and 'Education' helps ATS parsers read your file accurately.",
+  "Quantifying your achievements with metrics and percentages can increase callback rates by up to 40%.",
+  "Avoid using complex multi-column tables or graphics, as ATS scanners cannot reliably parse them.",
+  "Aligning your resume's key skills with job descriptions dramatically increases match confidence."
+];
 
 export function UploadResume() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -14,6 +30,10 @@ export function UploadResume() {
   const [isDragging, setIsDragging] = useState(false);
   const [aiConsent, setAiConsent] = useState(false);
   
+  const [currentStage, setCurrentStage] = useState(0);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [tipIndex, setTipIndex] = useState(0);
+  
   const fileInputRef = useRef(null);
   const { user, login } = useAuth();
   const navigate = useNavigate();
@@ -21,13 +41,48 @@ export function UploadResume() {
   // Handle escape to close or go back
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !isUploading) {
         navigate("/");
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [navigate]);
+  }, [navigate, isUploading]);
+
+  // Loading animation intervals
+  useEffect(() => {
+    if (!isUploading) {
+      setCurrentStage(0);
+      setAnalysisProgress(0);
+      setTipIndex(0);
+      return;
+    }
+
+    // Step & progress interval
+    const progressInterval = setInterval(() => {
+      setAnalysisProgress((prev) => {
+        if (prev < 90) {
+          const next = prev + Math.random() * 2.5 + 1;
+          if (next >= 75) setCurrentStage(3);
+          else if (next >= 50) setCurrentStage(2);
+          else if (next >= 25) setCurrentStage(1);
+          else setCurrentStage(0);
+          return Math.min(next, 92);
+        }
+        return prev;
+      });
+    }, 200);
+
+    // Tip rotation interval
+    const tipInterval = setInterval(() => {
+      setTipIndex((prev) => (prev + 1) % ATS_TIPS.length);
+    }, 3800);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(tipInterval);
+    };
+  }, [isUploading]);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -144,13 +199,17 @@ export function UploadResume() {
       const analysisData = await res.json().catch(() => null);
 
       if (res.ok && analysisData && analysisData.success !== false) {
-        navigate("/analysis", { 
-          state: { 
-            analysisData, 
-            fileName: selectedFile.name, 
-            fileObject: selectedFile.fileObject 
-          } 
-        });
+        setAnalysisProgress(100);
+        setCurrentStage(3);
+        setTimeout(() => {
+          navigate("/analysis", { 
+            state: { 
+              analysisData, 
+              fileName: selectedFile.name, 
+              fileObject: selectedFile.fileObject 
+            } 
+          });
+        }, 400);
       } else {
         setAnalysisFailed(true);
       }
@@ -181,7 +240,7 @@ export function UploadResume() {
         </div>
       </header>
 
-      <div className="upload-model-overlay" onClick={() => navigate("/")}>
+      <div className="upload-model-overlay" onClick={() => !isUploading && navigate("/")}>
         <div 
           className="upload-model-card" 
           onClick={(e) => e.stopPropagation()}
@@ -191,7 +250,8 @@ export function UploadResume() {
         >
           <button 
             className="upload-close-button" 
-            onClick={() => navigate("/")} 
+            onClick={() => !isUploading && navigate("/")} 
+            disabled={isUploading}
             aria-label="Close dialog"
           >
             ×
@@ -199,9 +259,69 @@ export function UploadResume() {
 
           <main className="upload-model-body single-column">
             <section className="upload-section">
-              <h1 className="upload-title">Upload Resume</h1>
+              {!isUploading && <h1 className="upload-title">Upload Resume</h1>}
               
-              {analysisFailed ? (
+              {isUploading ? (
+                <div className="analysis-loading-card">
+                  <div className="loading-badge">
+                    <Sparkles className="sparkle-icon glowing" />
+                    <span>AI Resume Engine Active</span>
+                  </div>
+
+                  <h2 className="loading-title">Analyzing Your Resume</h2>
+                  <p className="loading-filename">
+                    Target File: <span className="file-pill-name">{selectedFile?.name}</span>
+                  </p>
+
+                  <div className="progress-wrapper">
+                    <div className="progress-bar-container">
+                      <div 
+                        className="progress-bar-fill" 
+                        style={{ width: `${analysisProgress}%` }}
+                      >
+                        <div className="progress-shimmer"></div>
+                      </div>
+                    </div>
+                    <div className="progress-percentage">{Math.round(analysisProgress)}%</div>
+                  </div>
+
+                  <div className="loading-steps-list">
+                    {ANALYSIS_STAGES.map((stage, idx) => {
+                      const isDone = currentStage > idx;
+                      const isCurrent = currentStage === idx;
+                      const StageIcon = stage.Icon;
+                      
+                      return (
+                        <div 
+                          key={stage.id} 
+                          className={`step-item ${isDone ? "completed" : ""} ${isCurrent ? "active" : ""}`}
+                        >
+                          <div className="step-icon-wrap">
+                            {isDone ? (
+                              <CheckCircle2 className="step-check-icon" />
+                            ) : isCurrent ? (
+                              <Loader2 className="step-spin-icon" />
+                            ) : (
+                              <StageIcon className="step-default-icon" />
+                            )}
+                          </div>
+                          <span className="step-label">{stage.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="ats-tip-box">
+                    <div className="tip-header">
+                      <Sparkles className="tip-sparkle" />
+                      <span>ATS Pro Tip</span>
+                    </div>
+                    <p className="tip-content" key={tipIndex}>
+                      {ATS_TIPS[tipIndex]}
+                    </p>
+                  </div>
+                </div>
+              ) : analysisFailed ? (
                 <div className="analysis-error-card">
                   <div className="error-icon-circle">
                     <FaExclamationTriangle className="error-warning-icon" />
@@ -223,7 +343,7 @@ export function UploadResume() {
                       disabled={isUploading}
                       onClick={handleAnalyze}
                     >
-                      {isUploading ? "Analyzing resume..." : "Try Again"}
+                      Try Again
                     </button>
                   </div>
                 </div>
@@ -274,7 +394,7 @@ export function UploadResume() {
                 </div>
               )}
 
-              {!analysisFailed && (
+              {!analysisFailed && !isUploading && (
                 <>
                   <div className="ai-consent-section">
                     <label className="ai-consent-label">
@@ -328,7 +448,7 @@ export function UploadResume() {
                       disabled={!selectedFile || !aiConsent || isUploading}
                       onClick={handleAnalyze}
                     >
-                      {isUploading ? "Analyzing resume..." : "Analyze Resume"}
+                      Analyze Resume
                     </button>
                   </div>
                 </>
@@ -340,3 +460,4 @@ export function UploadResume() {
     </div>
   );
 }
+
