@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa";
+import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle, FaLock } from "react-icons/fa";
+import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../lib/AuthContext.jsx";
 import "./UploadResume.css";
 
@@ -9,11 +10,12 @@ export function UploadResume() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState(null);
   const [analysisFailed, setAnalysisFailed] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [aiConsent, setAiConsent] = useState(false);
   
   const fileInputRef = useRef(null);
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
 
   // Handle escape to close or go back
@@ -40,6 +42,7 @@ export function UploadResume() {
   const processFile = (file) => {
     setError(null);
     setAnalysisFailed(false);
+    setShowLoginPrompt(false);
     if (!file) return;
 
     const validTypes = [
@@ -91,11 +94,30 @@ export function UploadResume() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   };
 
+  const handleGoogleLoginSuccess = async (credentialResponse) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+      const res = await fetch(`${apiUrl}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
+      const data = await res.json();
+      if (data.user) {
+        login(data.user);
+        setShowLoginPrompt(false);
+      }
+    } catch (err) {
+      console.error("Google login failed from upload prompt", err);
+    }
+  };
+
   const handleAnalyze = async () => {
     if (!selectedFile || !selectedFile.fileObject) return;
     
     if (!user) {
-      setError("Please login first to analyze your resume.");
+      setShowLoginPrompt(true);
       return;
     }
 
@@ -242,7 +264,7 @@ export function UploadResume() {
                     </div>
                     <button 
                       className="file-preview-remove" 
-                      onClick={() => { setSelectedFile(null); setAnalysisFailed(false); }}
+                      onClick={() => { setSelectedFile(null); setAnalysisFailed(false); setShowLoginPrompt(false); }}
                       disabled={isUploading}
                       aria-label="Remove selected file"
                     >
@@ -267,6 +289,29 @@ export function UploadResume() {
                       </span>
                     </label>
                   </div>
+
+                  {showLoginPrompt && !user && (
+                    <div className="unauth-login-card" role="region" aria-label="Authentication Required">
+                      <div className="unauth-card-header">
+                        <FaLock className="unauth-lock-icon" />
+                        <h3 className="unauth-card-title">Login Required</h3>
+                      </div>
+                      <p className="unauth-card-body">
+                        Please login first to analyze your resume.
+                      </p>
+                      <div className="unauth-google-wrapper">
+                        <GoogleLogin
+                          onSuccess={handleGoogleLoginSuccess}
+                          onError={() => console.error("Google login failed from prompt")}
+                          theme="outline"
+                          size="large"
+                          text="continue_with"
+                          shape="pill"
+                          width="230"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {error && <div className="upload-error-message">{error}</div>}
 
