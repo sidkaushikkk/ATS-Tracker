@@ -313,8 +313,7 @@
 }
 
 .upload-cancel-btn:hover:not(:disabled) {
-  background: #7b91c1;
-  border-color: #ffffff;
+  background: #2563eb;
 }
 
 .upload-choose-btn {
