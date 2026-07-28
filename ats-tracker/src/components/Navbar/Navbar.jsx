@@ -71,6 +71,8 @@ function Navbar() {
                 text="signin_with"
                 shape="pill"
                 width="220"
+                locale="en"
+                logo_alignment="left"
               />
             </div>
           </div>
