@@ -41,8 +41,7 @@ const resumeAnalysisSchema = new mongoose.Schema({
     evidence: String
   }],
   missingKeywords: [{
-    name: String,
-    importance: String
+    name: String
   }],
   recommendedRoles: [{
     role: String,

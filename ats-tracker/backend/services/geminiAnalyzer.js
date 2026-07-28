@@ -85,6 +85,7 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
     4. Avoid protected-characteristic bias.
     5. Provide specific, actionable, truthful suggestions.
     6. All numeric scores must be integers from 0 to 100.
+    7. KEEP ALL RESPONSES CONCISE AND PROFESSIONAL. All titles must be under 10 words. All evidence and descriptions must be brief (1-2 sentences max). Never output repetitive phrases or rambling text.
     
     Resume Text:
     """
@@ -119,17 +120,17 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
     properties: {
       analysisType: { type: Type.STRING, description: "Must be 'application_match' if a job description was provided, else 'general'." },
       overallScore: { type: Type.INTEGER, description: "0 to 100" },
-      summary: { type: Type.STRING, description: "Short factual summary of the candidate's profile." },
+      summary: { type: Type.STRING, description: "Concise candidate summary (max 3 sentences)." },
       sectionScores: {
         type: Type.OBJECT,
         properties: {
-          contact: { type: Type.INTEGER },
-          experience: { type: Type.INTEGER },
-          skills: { type: Type.INTEGER },
-          education: { type: Type.INTEGER },
-          projects: { type: Type.INTEGER },
-          writingImpact: { type: Type.INTEGER },
-          atsReadability: { type: Type.INTEGER }
+          contact: { type: Type.INTEGER, description: "0 to 100" },
+          experience: { type: Type.INTEGER, description: "0 to 100" },
+          skills: { type: Type.INTEGER, description: "0 to 100" },
+          education: { type: Type.INTEGER, description: "0 to 100" },
+          projects: { type: Type.INTEGER, description: "0 to 100" },
+          writingImpact: { type: Type.INTEGER, description: "0 to 100" },
+          atsReadability: { type: Type.INTEGER, description: "0 to 100" }
         }
       },
       strengths: {
@@ -137,8 +138,8 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            title: { type: Type.STRING },
-            evidence: { type: Type.STRING }
+            title: { type: Type.STRING, description: "Concise title of strength (max 8 words)." },
+            evidence: { type: Type.STRING, description: "Brief specific evidence from resume (max 2 sentences)." }
           }
         }
       },
@@ -147,10 +148,10 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            title: { type: Type.STRING },
-            severity: { type: Type.STRING, description: "e.g. 'high', 'medium', 'low'" },
-            evidence: { type: Type.STRING },
-            recommendation: { type: Type.STRING }
+            title: { type: Type.STRING, description: "Concise title of problem (max 8 words)." },
+            severity: { type: Type.STRING, description: "'high', 'medium', or 'low'" },
+            evidence: { type: Type.STRING, description: "Brief evidence from resume (max 2 sentences)." },
+            recommendation: { type: Type.STRING, description: "Brief actionable fix (max 2 sentences)." }
           }
         }
       },
@@ -159,8 +160,8 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            name: { type: Type.STRING },
-            evidence: { type: Type.STRING }
+            name: { type: Type.STRING, description: "Keyword name (1-3 words)." },
+            evidence: { type: Type.STRING, description: "Brief context line from resume." }
           }
         }
       },
@@ -169,8 +170,8 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            name: { type: Type.STRING },
-            importance: { type: Type.STRING, description: "e.g. 'high', 'medium'" }
+            name: { type: Type.STRING, description: "Missing keyword name (1-3 words)." },
+            importance: { type: Type.STRING, description: "'high' or 'medium'" }
           }
         }
       },
@@ -179,9 +180,9 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            role: { type: Type.STRING },
-            match: { type: Type.INTEGER },
-            reason: { type: Type.STRING }
+            role: { type: Type.STRING, description: "Job title (1-4 words)." },
+            match: { type: Type.INTEGER, description: "Match percentage 0 to 100" },
+            reason: { type: Type.STRING, description: "Brief 1-sentence reason." }
           }
         }
       },
@@ -190,9 +191,9 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
         items: {
           type: Type.OBJECT,
           properties: {
-            original: { type: Type.STRING },
-            suggested: { type: Type.STRING },
-            reason: { type: Type.STRING }
+            original: { type: Type.STRING, description: "Original bullet point text." },
+            suggested: { type: Type.STRING, description: "Improved action-oriented bullet point." },
+            reason: { type: Type.STRING, description: "Brief 1-sentence explanation." }
           }
         }
       },
@@ -234,8 +235,60 @@ export async function analyzeWithGemini(resumeText, jobDescription = null) {
     const parsed = JSON.parse(rawJson);
     const validatedResult = AnalysisSchema.parse(parsed);
 
+    // Helper to sanitize strings and guard against model token degeneration loops
+    const sanitize = (text, maxLen = 300) => {
+      if (!text || typeof text !== 'string') return '';
+      let str = text.trim();
+      // Remove repeating sentence artifacts if model got stuck
+      if (str.length > maxLen) {
+        str = str.substring(0, maxLen).trim() + '...';
+      }
+      return str;
+    };
+
+    const sanitizedStrengths = (validatedResult.strengths || []).map(s => ({
+      title: sanitize(s.title, 100),
+      evidence: sanitize(s.evidence, 300)
+    }));
+
+    const sanitizedProblems = (validatedResult.problems || []).map(p => ({
+      title: sanitize(p.title, 100),
+      severity: p.severity || 'medium',
+      evidence: sanitize(p.evidence, 300),
+      recommendation: sanitize(p.recommendation, 300)
+    }));
+
+    const sanitizedMatchedKeywords = (validatedResult.matchedKeywords || []).map(k => ({
+      name: sanitize(k.name, 60),
+      evidence: sanitize(k.evidence, 200)
+    }));
+
+    const sanitizedMissingKeywords = (validatedResult.missingKeywords || []).map(k => ({
+      name: sanitize(k.name, 60),
+      importance: k.importance || 'medium'
+    }));
+
+    const sanitizedRecommendedRoles = (validatedResult.recommendedRoles || []).map(r => ({
+      role: sanitize(r.role, 60),
+      match: typeof r.match === 'number' ? r.match : 50,
+      reason: sanitize(r.reason, 200)
+    }));
+
+    const sanitizedBulletRewrites = (validatedResult.bulletRewrites || []).map(b => ({
+      original: sanitize(b.original, 250),
+      suggested: sanitize(b.suggested, 250),
+      reason: sanitize(b.reason, 200)
+    }));
+
     return {
       ...validatedResult,
+      summary: sanitize(validatedResult.summary, 500),
+      strengths: sanitizedStrengths,
+      problems: sanitizedProblems,
+      matchedKeywords: sanitizedMatchedKeywords,
+      missingKeywords: sanitizedMissingKeywords,
+      recommendedRoles: sanitizedRecommendedRoles,
+      bulletRewrites: sanitizedBulletRewrites,
       aiModel: modelName,
       analysisVersion: '1.0.0'
     };

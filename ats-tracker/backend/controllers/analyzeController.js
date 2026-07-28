@@ -38,7 +38,7 @@ export const analyzeResume = async (req, res) => {
       ...geminiResult
     });
   } catch (error) {
-    console.error('[Gemini AI Analysis Failure]', error);
+    console.error('[AI Analysis Failure]', error);
     return res.status(500).json({
       success: false,
       error: 'AI analysis failed. Please try again.'

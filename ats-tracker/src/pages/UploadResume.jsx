@@ -186,7 +186,7 @@ export function UploadResume() {
                   </div>
                   <h2 className="error-card-title">Analysis Failed</h2>
                   <p className="error-card-body">
-                    Gemini AI couldn't analyze your resume at the moment.
+                    We couldn't analyze your resume at the moment.<br/>Please try again.
                   </p>
                   <div className="error-card-actions">
                     <button 
