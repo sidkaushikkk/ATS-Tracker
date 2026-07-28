@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle, FaLock } from "react-icons/fa";
+import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa";
 import { CheckCircle2, Loader2, FileText, SearchCheck, BrainCircuit, Award } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../lib/AuthContext.jsx";

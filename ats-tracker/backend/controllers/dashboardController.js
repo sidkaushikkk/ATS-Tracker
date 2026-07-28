@@ -37,7 +37,6 @@ export const getDashboardHistory = async (req, res) => {
     res.status(200).json({
       profile: userProfile,
       metrics: {
-        resumesAnalyzed,
         latestScore,
         averageScore,
         bestScore
