@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes } from "react-icons/fa";
+import { FaRegFilePdf, FaRegFileWord, FaCloudUploadAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa";
 import { useAuth } from "../lib/AuthContext.jsx";
 import "./UploadResume.css";
 
@@ -8,6 +8,7 @@ export function UploadResume() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState(null);
+  const [analysisFailed, setAnalysisFailed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [aiConsent, setAiConsent] = useState(false);
   
@@ -38,6 +39,7 @@ export function UploadResume() {
 
   const processFile = (file) => {
     setError(null);
+    setAnalysisFailed(false);
     if (!file) return;
 
     const validTypes = [
@@ -104,6 +106,7 @@ export function UploadResume() {
 
     setIsUploading(true);
     setError(null);
+    setAnalysisFailed(false);
 
     const formData = new FormData();
     formData.append("resume", selectedFile.fileObject);
@@ -116,8 +119,9 @@ export function UploadResume() {
         body: formData,
       });
 
-      if (res.ok) {
-        const analysisData = await res.json();
+      const analysisData = await res.json().catch(() => null);
+
+      if (res.ok && analysisData && analysisData.success !== false) {
         navigate("/analysis", { 
           state: { 
             analysisData, 
@@ -126,12 +130,11 @@ export function UploadResume() {
           } 
         });
       } else {
-        const errorData = await res.json();
-        setError(errorData.message || "Failed to analyze resume.");
+        setAnalysisFailed(true);
       }
     } catch (error) {
-      console.error("Error uploading resume", error);
-      setError("An error occurred during upload. Please check your connection.");
+      console.error("Error analyzing resume:", error);
+      setAnalysisFailed(true);
     } finally {
       setIsUploading(false);
     }
@@ -176,7 +179,33 @@ export function UploadResume() {
             <section className="upload-section">
               <h1 className="upload-title">Upload Resume</h1>
               
-              {!selectedFile ? (
+              {analysisFailed ? (
+                <div className="analysis-error-card">
+                  <div className="error-icon-circle">
+                    <FaExclamationTriangle className="error-warning-icon" />
+                  </div>
+                  <h2 className="error-card-title">Analysis Failed</h2>
+                  <p className="error-card-body">
+                    Gemini AI couldn't analyze your resume at the moment.
+                  </p>
+                  <div className="error-card-actions">
+                    <button 
+                      className="upload-cancel-btn" 
+                      onClick={() => { setAnalysisFailed(false); setError(null); }}
+                      disabled={isUploading}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="upload-choose-btn primary-theme-btn"
+                      disabled={isUploading}
+                      onClick={handleAnalyze}
+                    >
+                      {isUploading ? "Analyzing resume..." : "Try Again"}
+                    </button>
+                  </div>
+                </div>
+              ) : !selectedFile ? (
                 <div 
                   className={`upload-dropzone ${isDragging ? "dragging" : ""}`}
                   onDragOver={handleDragOver}
@@ -213,7 +242,7 @@ export function UploadResume() {
                     </div>
                     <button 
                       className="file-preview-remove" 
-                      onClick={() => setSelectedFile(null)}
+                      onClick={() => { setSelectedFile(null); setAnalysisFailed(false); }}
                       disabled={isUploading}
                       aria-label="Remove selected file"
                     >
@@ -223,38 +252,42 @@ export function UploadResume() {
                 </div>
               )}
 
-              <div className="ai-consent-section">
-                <label className="ai-consent-label">
-                  <input
-                    type="checkbox"
-                    checked={aiConsent}
-                    onChange={(e) => setAiConsent(e.target.checked)}
-                    disabled={isUploading}
-                  />
-                  <span>
-                    I give my consent to use my Resume Data for analyzations. 
-                  </span>
-                </label>
-              </div>
+              {!analysisFailed && (
+                <>
+                  <div className="ai-consent-section">
+                    <label className="ai-consent-label">
+                      <input
+                        type="checkbox"
+                        checked={aiConsent}
+                        onChange={(e) => setAiConsent(e.target.checked)}
+                        disabled={isUploading}
+                      />
+                      <span>
+                        I give my consent to use my Resume Data for analyzations. 
+                      </span>
+                    </label>
+                  </div>
 
-              {error && <div className="upload-error-message">{error}</div>}
+                  {error && <div className="upload-error-message">{error}</div>}
 
-              <div className="upload-file-list-actions">
-                <button 
-                  className="upload-cancel-btn" 
-                  onClick={() => navigate("/")}
-                  disabled={isUploading}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="upload-choose-btn primary-theme-btn"
-                  disabled={!selectedFile || !aiConsent || isUploading}
-                  onClick={handleAnalyze}
-                >
-                  {isUploading ? "Analyzing resume..." : "Analyze Resume"}
-                </button>
-              </div>
+                  <div className="upload-file-list-actions">
+                    <button 
+                      className="upload-cancel-btn" 
+                      onClick={() => navigate("/")}
+                      disabled={isUploading}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="upload-choose-btn primary-theme-btn"
+                      disabled={!selectedFile || !aiConsent || isUploading}
+                      onClick={handleAnalyze}
+                    >
+                      {isUploading ? "Analyzing resume..." : "Analyze Resume"}
+                    </button>
+                  </div>
+                </>
+              )}
             </section>
           </main>
         </div>

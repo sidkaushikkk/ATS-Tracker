@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { 
   CheckCircle, 
   AlertTriangle, 
-  Lightbulb, 
   TrendingUp, 
   Award, 
   ArrowLeft, 
@@ -100,21 +99,21 @@ export default function AnalyzePage() {
   });
   const [isAnalysisReady, setIsAnalysisReady] = useState(false);
 
+  const isValidAnalysis = analysisData && analysisData.success !== false && analysisData.analysisSource !== 'fallback';
+
   useEffect(() => {
-    if (!analysisData) {
-      navigate("/upload-resume");
+    if (!isValidAnalysis) {
       return;
     }
 
     const sScores = analysisData.sectionScores || {};
     
-    // AI or fallback scores
     const targets = {
       overall: analysisData.overallScore || 0,
-      formatting: sScores.contact || Math.min(100, (analysisData.overallScore || 0) + 5),
-      keywords: sScores.skills || Math.min(100, (analysisData.overallScore || 0) + 2),
-      readability: sScores.atsReadability || Math.min(100, (analysisData.overallScore || 0) + 8),
-      structure: sScores.experience || Math.min(100, (analysisData.overallScore || 0) + 3)
+      formatting: sScores.contact || 0,
+      keywords: sScores.skills || 0,
+      readability: sScores.atsReadability || 0,
+      structure: sScores.experience || 0
     };
 
     const duration = 1600;
@@ -140,7 +139,7 @@ export default function AnalyzePage() {
       }
     };
     requestAnimationFrame(animate);
-  }, [analysisData, navigate]);
+  }, [analysisData, isValidAnalysis]);
 
   const arcLength = 157.08;
   const strokeDashoffset = arcLength - (arcLength * (scores.overall / 100));
@@ -148,22 +147,41 @@ export default function AnalyzePage() {
   const [keywordSectionRef] = useIntersectionObserver();
   const [jobRolesSectionRef, isJobRolesSectionVisible] = useIntersectionObserver();
 
-  if (!analysisData) return null;
+  if (!isValidAnalysis) {
+    return (
+      <div className="analyze-page-wrapper">
+        <Navbar />
+        <div className="analyze-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '65vh' }}>
+          <div className="glass-panel" style={{ padding: '48px', textAlign: 'center', maxWidth: '520px', borderRadius: '24px' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <AlertTriangle size={32} style={{ color: '#ef4444' }} />
+            </div>
+            <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1e293b', marginBottom: '12px', fontFamily: "'Outfit', sans-serif" }}>
+              Analysis Failed
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '15px', lineHeight: '1.6', marginBottom: '28px' }}>
+              We couldn't analyze your resume at the moment.
+            </p>
+            <button 
+              className="btn btn-primary primary-theme-btn" 
+              onClick={() => navigate("/upload-resume")}
+              style={{ padding: '12px 28px', fontSize: '15px', fontWeight: '600' }}
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const isAI = analysisData.analysisSource === 'ai';
   const scoreTypeLabel = analysisData.analysisType === 'application_match' ? 'Application Match Score' : 'General Resume Quality Score';
 
   // AI lists
   const strengths = analysisData.strengths || [];
   const missingKeywords = analysisData.missingKeywords || [];
   const bulletRewrites = analysisData.bulletRewrites || [];
-  
-  // Fallback lists
-  const observations = analysisData.keyObservations || [];
   const problems = analysisData.problems || [];
-  const suggestions = analysisData.suggestions || [];
-  
-  // Shared lists
   const keywords = analysisData.matchedKeywords || [];
   const suitableJobRoles = analysisData.recommendedRoles || [];
 
@@ -213,7 +231,7 @@ export default function AnalyzePage() {
 
           <div className="score-details-card glass-panel">
             <h2 className="score-panel-title">
-              {isAI ? '✨ AI Analysis Results' : '⚙️ Fallback Analysis Results'}
+              ✨ AI Analysis Results
             </h2>
 
             <div className="gauge-outer-wrapper">
@@ -255,7 +273,7 @@ export default function AnalyzePage() {
 
             <div className="metric-cards-grid">
               <div className="mini-metric-card">
-                <span className="mini-card-title">{isAI ? 'Contact Info' : 'Formatting'}</span>
+                <span className="mini-card-title">Contact Info</span>
                 <div className="mini-card-score-row">
                   <span className="mini-card-num">{scores.formatting}%</span>
                   <span className="dot-indicator green"></span>
@@ -290,7 +308,7 @@ export default function AnalyzePage() {
               </div>
               <div className="status-strip-text">
                 <p className="status-bold-msg">Resume successfully analyzed.</p>
-                <p className="status-sub-msg">Powered by {isAI ? 'Gemini 2.5 AI' : 'Rule-Based Engine'}.</p>
+                <p className="status-sub-msg">Powered by Gemini AI.</p>
               </div>
             </div>
           </div>
@@ -302,21 +320,16 @@ export default function AnalyzePage() {
           <AnimatedSection className="obs-col shadow-card-block">
             <div className="card-block-header green-theme">
               <CheckCircle size={22} className="block-icon" />
-              <h2>{isAI ? 'Key Strengths' : 'Key Observations'}</h2>
+              <h2>Key Strengths</h2>
             </div>
             <ul className="observations-bullet-list">
-              {isAI ? strengths.map((str, i) => (
+              {strengths.map((str, i) => (
                 <li key={i}>
                   <div className="bullet-circle success">✓</div>
                   <span><strong>{str.title}:</strong> {str.evidence}</span>
                 </li>
-              )) : observations.map((obs, i) => (
-                <li key={i}>
-                  <div className="bullet-circle success">✓</div>
-                  <span>{obs}</span>
-                </li>
               ))}
-              {(isAI ? strengths.length === 0 : observations.length === 0) && <li><span>No specific observations found.</span></li>}
+              {strengths.length === 0 && <li><span>No specific strengths found.</span></li>}
             </ul>
           </AnimatedSection>
 
@@ -330,7 +343,7 @@ export default function AnalyzePage() {
                 <li key={i}>
                   <div className="bullet-circle warning">!</div>
                   <span>
-                    <strong>{prob.title || 'Observation'} ({prob.severity || 'medium'}):</strong> {prob.evidence || prob}
+                    <strong>{prob.title || 'Observation'} ({prob.severity || 'medium'}):</strong> {prob.evidence}
                     {prob.recommendation && <div><em>Fix: {prob.recommendation}</em></div>}
                   </span>
                 </li>
@@ -339,48 +352,30 @@ export default function AnalyzePage() {
             </ul>
           </AnimatedSection>
 
-          {isAI ? (
-            <AnimatedSection className="obs-col shadow-card-block">
-              <div className="card-block-header purple-theme">
-                <PenTool size={22} className="block-icon" />
-                <h2>Bullet Rewrites</h2>
-              </div>
-              <ul className="observations-bullet-list">
-                {bulletRewrites.map((rw, i) => (
-                  <li key={i}>
-                    <div className="bullet-circle suggestion">ℹ</div>
-                    <div>
-                      <div style={{ textDecoration: 'line-through', color: '#64748b' }}>{rw.original}</div>
-                      <div style={{ color: '#16a34a', marginTop: '4px' }}>✨ {rw.suggested}</div>
-                      <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>Reason: {rw.reason}</div>
-                    </div>
-                  </li>
-                ))}
-                {bulletRewrites.length === 0 && <li><span>No specific rewrites suggested.</span></li>}
-              </ul>
-            </AnimatedSection>
-          ) : (
-            <AnimatedSection className="obs-col shadow-card-block">
-              <div className="card-block-header blue-theme">
-                <Lightbulb size={22} className="block-icon" />
-                <h2>Suggestions</h2>
-              </div>
-              <ul className="observations-bullet-list">
-                {suggestions.map((sugg, i) => (
-                  <li key={i}>
-                    <div className="bullet-circle suggestion">ℹ</div>
-                    <span>{sugg}</span>
-                  </li>
-                ))}
-                {suggestions.length === 0 && <li><span>No specific suggestions at this time.</span></li>}
-              </ul>
-            </AnimatedSection>
-          )}
+          <AnimatedSection className="obs-col shadow-card-block">
+            <div className="card-block-header purple-theme">
+              <PenTool size={22} className="block-icon" />
+              <h2>Bullet Rewrites</h2>
+            </div>
+            <ul className="observations-bullet-list">
+              {bulletRewrites.map((rw, i) => (
+                <li key={i}>
+                  <div className="bullet-circle suggestion">ℹ</div>
+                  <div>
+                    <div style={{ textDecoration: 'line-through', color: '#64748b' }}>{rw.original}</div>
+                    <div style={{ color: '#16a34a', marginTop: '4px' }}>✨ {rw.suggested}</div>
+                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>Reason: {rw.reason}</div>
+                  </div>
+                </li>
+              ))}
+              {bulletRewrites.length === 0 && <li><span>No specific rewrites suggested.</span></li>}
+            </ul>
+          </AnimatedSection>
 
           <AnimatedSection className="obs-col shadow-card-block">
             <div className="card-block-header blue-theme">
               <Briefcase size={22} className="block-icon" />
-              <h2>{isAI ? 'Gemini Suggested Roles' : 'Suitable Job Roles'}</h2>
+              <h2>Suggested Roles</h2>
             </div>
             <div className="job-role-match-list" ref={jobRolesSectionRef}>
               {suitableJobRoles.map((jobRole, index) => {
@@ -400,7 +395,7 @@ export default function AnalyzePage() {
                         }}
                       ></div>
                     </div>
-                    <span className={`job-role-match-label ${matchTone}`}>{jobRole.reason || jobRole.level}</span>
+                    <span className={`job-role-match-label ${matchTone}`}>{jobRole.reason}</span>
                   </div>
                 );
               })}
@@ -429,7 +424,7 @@ export default function AnalyzePage() {
             ))}
           </div>
 
-          {isAI && missingKeywords.length > 0 && (
+          {missingKeywords.length > 0 && (
             <div style={{ marginTop: '24px' }}>
               <div className="title-with-icon" style={{ marginBottom: '16px' }}>
                 <Search size={24} className="section-hdr-icon" style={{ color: '#ef4444' }} />
@@ -450,7 +445,7 @@ export default function AnalyzePage() {
         </AnimatedSection>
 
         {/* SECTION 3: Resume Breakdown */}
-        {isAI && analysisData.sectionScores && (
+        {analysisData.sectionScores && (
           <AnimatedSection className="breakdown-section glass-panel">
             <div className="title-with-icon">
               <Layers size={24} className="section-hdr-icon" />
@@ -480,9 +475,9 @@ export default function AnalyzePage() {
             <span>Overall Summary & Recommendation</span>
           </div>
           <p className="recommendation-description-paragraph">
-            {analysisData.summary || "This resume has been analyzed using fallback metrics. Add more quantified achievements and relevant keywords to improve your score."}
+            {analysisData.summary || "No summary provided."}
           </p>
-          {isAI && analysisData.disclaimer && (
+          {analysisData.disclaimer && (
             <p style={{ marginTop: '12px', fontSize: '13px', color: '#64748b', fontStyle: 'italic' }}>
               {analysisData.disclaimer}
             </p>
