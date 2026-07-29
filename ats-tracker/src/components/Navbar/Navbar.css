@@ -11,10 +11,10 @@
     display:flex;
     justify-content: flex-start;
     align-items:center;
-
+    margin-bottom: 10px;
     padding:0 63px;
 
-    background:rgb(6, 36, 68);
+    background:#002147;
     border-bottom:1px solid #e6e6e6;
     position: fixed;
     z-index: 9999;
