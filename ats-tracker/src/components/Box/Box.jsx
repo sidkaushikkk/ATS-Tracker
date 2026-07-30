@@ -37,7 +37,7 @@ function Box(){
                 <h2>
                     <span className="line line1">Does your 
                         <span className="highlight"> RESUME</span>  really</span>
-                    <span className="line line2">stand out ?</span>
+                    <span className="line line2"> stand out ?</span>
                 </h2>           
 
                 <br/>

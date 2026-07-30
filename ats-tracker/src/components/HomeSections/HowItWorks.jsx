@@ -24,16 +24,13 @@ function HowItWorks() {
       <h2 className="hs-heading">How It Works</h2>
 
       <div className="hiw-steps">
-        {steps.map((step, i) => (
+        {steps.map((step) => (
           <>
             <div className="hiw-card" key={step.title}>
               <div className="hiw-emoji">{step.emoji}</div>
               <h3>{step.title}</h3>
               <p>{step.desc}</p>
             </div>
-            {i < steps.length - 1 && (
-              <div className="hiw-arrow" key={`arrow-${i}`}>→</div>
-            )}
           </>
         ))}
       </div>
