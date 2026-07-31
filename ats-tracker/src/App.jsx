@@ -6,8 +6,13 @@ import { UploadResume } from "./pages/UploadResume.jsx";
 import AnalyzePage from "./pages/ResumeAnalyzations/AnalyzePage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
+import useBackendPing from "./hooks/useBackendPing.js";
+
 
 function App() {
+  
+  useBackendPing();
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
