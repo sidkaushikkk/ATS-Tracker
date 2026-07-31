@@ -12,7 +12,7 @@
 }
 
 .hs-section-first {
-  margin-top: clamp(20px, 4vw, 40px);
+  margin-top: 0;
 }
 
 .hs-section-alt {
@@ -53,6 +53,12 @@
 }
 
 /* ── How It Works ────────────────────────────────────────── */
+.hs-section-hiw {
+  background: #eeebda;
+  margin-top: 0;
+  padding-top: clamp(24px, 4vw, 40px);
+}
+
 .hiw-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
@@ -64,7 +70,7 @@
 }
 
 .hiw-card {
-  background: #fff;
+  background: white;
   border: 1px solid #e5e4e7;
   border-radius: 16px;
   padding: 24px 20px;

@@ -20,7 +20,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="hs-section hs-section-first">
+    <section className="hs-section hs-section-first hs-section-hiw">
       <h2 className="hs-heading">How It Works</h2>
 
       <div className="hiw-steps">
