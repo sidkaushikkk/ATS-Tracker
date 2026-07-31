@@ -3,8 +3,9 @@ import { useEffect } from "react";
 export default function useBackendPing() {
   useEffect(() => {
     const ping = () => {
-      fetch(`${import.meta.env.VITE_API_URL}/health`).catch(() => {});
-    };
+const backendUrl = new URL(import.meta.env.VITE_API_URL).origin;
+
+fetch(`${backendUrl}/health`).catch(() => {});    };
 
     ping();
 

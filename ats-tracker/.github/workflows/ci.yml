@@ -1,0 +1,88 @@
+# Continuous Integration (CI) Workflow for Vite Frontend & Express Backend
+# Note: This workflow performs CI checks only (linting, build verification, backend syntax/import checks).
+# It does NOT perform deployment and will not interfere with automatic Vercel or Render deployments.
+
+name: CI
+
+# Trigger workflow on every push and pull request to any branch
+on:
+  push:
+  pull_request:
+
+# Ensure workflow fails immediately if any step fails (fail-fast execution)
+jobs:
+  ci:
+    name: Continuous Integration Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2 & Step 10: Set up Node.js version (Node 22 LTS) and cache npm dependencies for faster builds
+      - name: Set up Node.js (v22 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22' # Using Node.js 22 LTS (unspecified in package.json engines)
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+
+      # Step 3 & Step 5: Install frontend dependencies (using `npm ci` where possible, falling back to `npm install`)
+      - name: Install frontend dependencies
+        run: |
+          echo "Installing root/frontend dependencies..."
+          npm ci || npm install
+
+      # Step 4 & Step 5: Install backend dependencies (using `npm ci` where possible, falling back to `npm install`)
+      - name: Install backend dependencies
+        run: |
+          echo "Installing backend dependencies..."
+          npm ci --prefix backend || npm install --prefix backend
+
+      # Step 6: Run ESLint if configured in package.json
+      - name: Run ESLint
+        run: |
+          if node -e "const pkg = require('./package.json'); process.exit(pkg.scripts && pkg.scripts.lint ? 0 : 1)"; then
+            echo "Lint script found in package.json. Running ESLint..."
+            npm run lint
+          else
+            echo "No lint script found in package.json. Skipping ESLint."
+          fi
+
+      # Step 7: Build the Vite frontend application
+      - name: Build Vite frontend
+        run: |
+          echo "Building frontend bundle..."
+          npm run build
+
+      # Step 8: Verify Express backend can start without syntax or import errors
+      - name: Verify Express backend syntax and module imports
+        run: |
+          echo "Verifying backend JavaScript syntax..."
+          find backend -type f -name "*.js" -not -path "*/node_modules/*" -exec node --check {} +
+
+          echo "Verifying backend module imports and dependency resolution..."
+          node -e "
+            await Promise.all([
+              import('./backend/config/db.js'),
+              import('./backend/models/User.js'),
+              import('./backend/models/ResumeDraft.js'),
+              import('./backend/models/ResumeAnalysis.js'),
+              import('./backend/controllers/authController.js'),
+              import('./backend/controllers/analyzeController.js'),
+              import('./backend/controllers/dashboardController.js'),
+              import('./backend/controllers/profileController.js'),
+              import('./backend/controllers/resumeDraftController.js'),
+              import('./backend/routes/auth.js'),
+              import('./backend/routes/analyze.js'),
+              import('./backend/routes/dashboard.js'),
+              import('./backend/routes/profile.js'),
+              import('./backend/routes/resumeDrafts.js'),
+              import('./backend/services/geminiAnalyzer.js'),
+              import('./backend/services/parser.js')
+            ]);
+            console.log('All backend modules loaded successfully without syntax or import errors.');
+          "
