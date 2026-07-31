@@ -1,0 +1,174 @@
+.section-order-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.section-order-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.section-order-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted, #64748b);
+    line-height: 1.4;
+}
+
+.btn-reset-order {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color, #cbd5e1);
+    background: var(--bg-input, #ffffff);
+    color: var(--text-main, #334155);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-reset-order:hover {
+    background: var(--accent-soft, rgba(37, 99, 235, 0.08));
+    border-color: var(--accent-border, rgba(37, 99, 235, 0.3));
+    color: var(--accent-primary, #2563eb);
+}
+
+/* List of Draggable Cards */
+.section-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section-order-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-input, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.section-order-card:hover {
+    border-color: var(--accent-border, rgba(37, 99, 235, 0.4));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+
+.section-order-card.dragging {
+    opacity: 0.4;
+    border-style: dashed;
+    border-color: var(--accent-primary, #2563eb);
+    background: var(--accent-soft, rgba(37, 99, 235, 0.05));
+}
+
+.card-drag-handle {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted, #94a3b8);
+    cursor: grab;
+    padding: 4px;
+    margin-right: 8px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.card-drag-handle:active {
+    cursor: grabbing;
+    color: var(--accent-primary, #2563eb);
+}
+
+.card-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.card-number {
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-soft, rgba(37, 99, 235, 0.1));
+    color: var(--accent-primary, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-main, #1e293b);
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.badge-active {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-empty {
+    background: rgba(148, 163, 184, 0.12);
+    color: #64748b;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.arrow-controls {
+    display: flex;
+    gap: 2px;
+}
+
+.btn-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    background: var(--bg-app, #f8fafc);
+    color: var(--text-main, #475569);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-arrow:hover:not(:disabled) {
+    background: var(--accent-soft, rgba(37, 99, 235, 0.1));
+    border-color: var(--accent-border, rgba(37, 99, 235, 0.3));
+    color: var(--accent-primary, #2563eb);
+}
+
+.btn-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

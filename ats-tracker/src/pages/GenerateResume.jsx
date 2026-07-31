@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Download, AlertCircle } from 'lucide-react';
 import ResumeForm from '../components/ResumeForm';
 import ResumePreview from '../components/ResumePreview';
+import { DEFAULT_SECTION_ORDER } from '../constants/sectionOrder';
 import { useAuth } from '../lib/AuthContext';
 import logo from "../assets/logo.png";
 
@@ -49,6 +50,7 @@ export default function App() {
 
   // Central Resume State
   const [resumeData, setResumeData] = useState(initialResumeData);
+  const [sectionOrder, setSectionOrder] = useState(DEFAULT_SECTION_ORDER);
 
   // Fetch initial draft
   useEffect(() => {
@@ -63,7 +65,11 @@ export default function App() {
             const drafts = await res.json();
             if (drafts.length > 0) {
               setDraftId(drafts[0]._id);
-              setResumeData(drafts[0].resumeData || initialResumeData);
+              const fetchedData = drafts[0].resumeData || initialResumeData;
+              setResumeData(fetchedData);
+              if (fetchedData.sectionOrder && fetchedData.sectionOrder.length > 0) {
+                setSectionOrder(fetchedData.sectionOrder);
+              }
             }
           }
         } catch (error) {
@@ -362,10 +368,28 @@ export default function App() {
     }));
   };
 
+  // Section Order Handlers
+  const updateSectionOrder = (newOrder) => {
+    setSectionOrder(newOrder);
+    setResumeData((prev) => ({
+      ...prev,
+      sectionOrder: newOrder,
+    }));
+  };
+
+  const resetSectionOrder = () => {
+    setSectionOrder(DEFAULT_SECTION_ORDER);
+    setResumeData((prev) => ({
+      ...prev,
+      sectionOrder: DEFAULT_SECTION_ORDER,
+    }));
+  };
+
   // Clear Form handler
   const clearForm = async () => {
     if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
       setResumeData(initialResumeData);
+      setSectionOrder(DEFAULT_SECTION_ORDER);
       if (draftId && user) {
         try {
            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
@@ -503,6 +527,9 @@ export default function App() {
             updateLanguage={updateLanguage}
             removeLanguage={removeLanguage}
             updateInterests={updateInterests}
+            sectionOrder={sectionOrder}
+            updateSectionOrder={updateSectionOrder}
+            resetSectionOrder={resetSectionOrder}
             clearForm={clearForm}
           />
         </section>
@@ -547,7 +574,7 @@ export default function App() {
           )}
 
           {/* Live Print-Friendly Preview */}
-          <ResumePreview data={resumeData} previewRef={previewRef} />
+          <ResumePreview data={resumeData} previewRef={previewRef} sectionOrder={sectionOrder} />
         </section>
       </main>
     </div>

@@ -15,9 +15,11 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
+  Layers,
 } from 'lucide-react';
 import FormField from './FormField';
 import TagInput from './TagInput';
+import SectionOrderManager from './SectionOrderManager';
 
 /**
  * ResumeForm Component
@@ -63,12 +65,17 @@ export default function ResumeForm({
   removeLanguage,
   // Interests
   updateInterests,
+  // Section Order
+  sectionOrder,
+  updateSectionOrder,
+  resetSectionOrder,
   // Clear button
   clearForm,
 }) {
   // State to track open/closed state of accordion sections
   const [activeSections, setActiveSections] = useState({
     personalInfo: true, // open by default
+    sectionOrder: false,
     skills: false,
     experience: false,
     projects: false,
@@ -217,6 +224,32 @@ export default function ResumeForm({
               required
             />
           </div>
+        </div>
+
+        {/* ==================== RESUME SECTION ORDER ==================== */}
+        <div className={`accordion-item ${activeSections.sectionOrder ? 'active' : ''}`}>
+          <button
+            type="button"
+            className="accordion-header"
+            onClick={() => toggleSection('sectionOrder')}
+          >
+            <div className="accordion-title-group">
+              <Layers size={18} className="accordion-icon" />
+              <span>Resume Section Order</span>
+            </div>
+            {activeSections.sectionOrder ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+
+          {activeSections.sectionOrder && (
+            <div className="accordion-content">
+              <SectionOrderManager
+                sectionOrder={sectionOrder}
+                onChangeOrder={updateSectionOrder}
+                onResetOrder={resetSectionOrder}
+                data={data}
+              />
+            </div>
+          )}
         </div>
 
         {/* ==================== 2. SKILLS CATEGORIES ==================== */}
