@@ -54,7 +54,7 @@
 
 /* ── How It Works ────────────────────────────────────────── */
 .hs-section-hiw {
-  background: #eeebda;
+  background: white;
   margin-top: 0;
   padding-top: clamp(24px, 4vw, 40px);
 }

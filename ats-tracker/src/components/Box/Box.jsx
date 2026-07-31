@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Box.css";
 
-function Box(){
+function Box() {
     const navigate = useNavigate();
     const [score, setScore] = useState(0);
 
@@ -31,126 +31,190 @@ function Box(){
         return () => clearInterval(interval);
     }, []);
 
+    // Radial Gauge SVG Calculations
+    const radius = 36;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (circumference * score) / 100;
+
     return (
-        <div className="Box">
+        <section className="Box">
+            {/* Ambient Background Glows */}
+            <div className="hero-ambient-glow glow-1"></div>
+            <div className="hero-ambient-glow glow-2"></div>
+
             <div className="content">
+                {/* <div className="hero-badge">
+                    <span className="badge-dot"></span>
+                    <span>AI-Powered ATS Resume Tracker</span>
+                </div> */}
+
                 <h2>
-                    <span className="line line1">Does your 
-                        <span className="highlight"> RESUME</span>  really</span>
-                    <span className="line line2"> stand out ?</span>
-                </h2>           
+                    <span className="line line1">Does your <span className="highlight">RESUME</span> really</span>
+                    <span className="line line2">stand out?</span>
+                </h2>
 
-                <br/>
-
-                <p>Over <span className="p-highlight">75% of resumes</span> are filtered out by <span className="p-highlight">Applicant Tracking Systems</span> before reaching a recruiter.
-                     Find out how your resume performs—and how to improve it.</p>
+                <p>
+                    Over <span className="p-highlight">75% of resumes</span> are filtered out by <span className="p-highlight">Applicant Tracking Systems</span> before reaching a recruiter. Find out how your resume performs—and how to improve it.
+                </p>
 
                 <div className="box-buttons">
-
-                    <button className="genAnalysis-button" onClick={() => navigate("/upload-resume")}>Generate Analysis </button>
-                    <a href = "/about-ats.html"><button className="abtATS-button">About ATS</button></a>
-
+                    <button className="genAnalysis-button" onClick={() => navigate("/upload-resume")}>
+                        Generate Analysis
+                        <svg className="btn-icon" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                    </button>
+                    <a href="/about-ats.html">
+                        <button className="abtATS-button">About ATS</button>
+                    </a>
                 </div>
 
-                <br/>
-                <br/>
-              <div className = "generate-resume">
-                  <p>Don't have a resume ? <button className="genResume-button" onClick={() => navigate("/generate-resume")}>Generate Resume</button></p>  
+                <div className="generate-resume">
+                    <p>
+                        Don't have a resume?{" "}
+                        <button className="genResume-button" onClick={() => navigate("/generate-resume")}>
+                            Generate Resume
+                        </button>
+                    </p>
                 </div>
             </div>
 
             <div className="image">
-                <div className="ats-animation-container">
-                    {/* Background particles */}
-                    <div className="particle p-1"></div>
-                    <div className="particle p-2"></div>
-                    <div className="particle p-3"></div>
-                    <div className="particle p-4"></div>
-                    <div className="particle p-5"></div>
+                <div className="ats-dashboard-wrapper">
+                    {/* Floating Glass Card 1 (Top Right) - Desktop Only */}
+                    <div className="floating-card float-card-1">
+                        <div className="float-card-icon badge-green">↑</div>
+                        <div className="float-card-text">
+                            <span className="float-val">+18% Match</span>
+                            <span className="float-lbl">Targeting Senior Roles</span>
+                        </div>
+                    </div>
 
-                    {/* Floating keywords */}
-                    <div className="keyword kw-1">React</div>
-                    <div className="keyword kw-2">JavaScript</div>
-                    <div className="keyword kw-3">HTML</div>
-                    <div className="keyword kw-4">CSS</div>
-                    <div className="keyword kw-5">Node.js</div>
-                    <div className="keyword kw-6">MongoDB</div>
-                    <div className="keyword kw-7">Git</div>
-                    <div className="keyword kw-8">Problem Solving</div>
+                    {/* Floating Glass Card 2 (Bottom Left) - Desktop Only */}
+                    <div className="floating-card float-card-2">
+                        <div className="float-card-icon badge-blue">✓</div>
+                        <div className="float-card-text">
+                            <span className="float-val">24/24 Passed</span>
+                            <span className="float-lbl">ATS Parsing Rules</span>
+                        </div>
+                    </div>
 
-                    {/* Main illustration contents */}
-                    <div className="animation-content">
-                        {/* Resume/Document Card */}
-                        <div className="resume-card">
-                            <div className="resume-glow"></div>
-                            <div className="scanning-beam"></div>
+                    {/* Main Dashboard Panel */}
+                    <div className="dashboard-main-card">
+                        {/* Header Bar */}
+                        <div className="dash-header">
+                            <div className="dash-dots">
+                                <span className="dot dot-red"></span>
+                                <span className="dot dot-yellow"></span>
+                                <span className="dot dot-green"></span>
+                            </div>
+                            <div className="dash-status-badge">
+                                <span className="status-live-dot"></span>
+                                Live ATS Scan
+                            </div>
+                        </div>
 
-                            <div className="resume-header">
-                                <div className="resume-avatar"></div>
-                                <div className="resume-title-bars">
-                                    <div className="bar bar-title"></div>
-                                    <div className="bar bar-subtitle"></div>
+                        {/* Top Grid: Resume Preview & ATS Score */}
+                        <div className="dash-grid-top">
+                            {/* Resume Preview Panel */}
+                            <div className="resume-preview-panel">
+                                <div className="scanning-beam"></div>
+                                <div className="preview-header">
+                                    <div className="preview-avatar">AM</div>
+                                    <div className="preview-info">
+                                        <div className="preview-name">Alex Morgan</div>
+                                        <div className="preview-role">Software Engineer</div>
+                                    </div>
+                                </div>
+                                <div className="preview-sections">
+                                    <div className="preview-sec sec-pass">
+                                        <span>Experience</span>
+                                        <span className="check-icon">✓</span>
+                                    </div>
+                                    <div className="preview-sec sec-pass">
+                                        <span>Core Skills</span>
+                                        <span className="check-icon">✓</span>
+                                    </div>
+                                    <div className="preview-sec sec-pass">
+                                        <span>Education</span>
+                                        <span className="check-icon">✓</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="resume-sections">
-                                <div className="resume-section sec-name">
-                                    <div className="section-header">
-                                        <span className="section-label">Applicant Info</span>
-                                        <span className="checkmark">✓</span>
+                            {/* Score Gauge & Strength */}
+                            <div className="score-panel">
+                                <div className="score-gauge-box">
+                                    <svg className="score-svg-gauge" viewBox="0 0 80 80">
+                                        <circle className="gauge-bg" cx="40" cy="40" r={radius} />
+                                        <circle
+                                            className="gauge-fill"
+                                            cx="40"
+                                            cy="40"
+                                            r={radius}
+                                            style={{
+                                                strokeDasharray: circumference,
+                                                strokeDashoffset: strokeDashoffset
+                                            }}
+                                        />
+                                    </svg>
+                                    <div className="score-center-val">
+                                        <span className="val-number">{score}</span>
+                                        <span className="val-symbol">%</span>
                                     </div>
-                                    <div className="bar bar-sec"></div>
                                 </div>
 
-                                <div className="resume-section sec-experience">
-                                    <div className="section-header">
-                                        <span className="section-label">Work Experience</span>
-                                        <span className="checkmark">✓</span>
+                                <div className="score-meta">
+                                    <div className="score-status-text">
+                                        {score === 0 ? "Ready" : score < 92 ? "Scanning..." : "Optimized!"}
                                     </div>
-                                    <div className="bar bar-sec"></div>
-                                    <div className="bar bar-sec short"></div>
-                                </div>
-
-                                <div className="resume-section sec-skills">
-                                    <div className="section-header">
-                                        <span className="section-label">Core Skills</span>
-                                        <span className="checkmark">✓</span>
+                                    <div className="strength-meter">
+                                        <div className="strength-label">
+                                            <span>Resume Strength</span>
+                                            <span className="strength-val">Top 8%</span>
+                                        </div>
+                                        <div className="strength-bar-bg">
+                                            <div className="strength-bar-fill" style={{ width: `${score}%` }}></div>
+                                        </div>
                                     </div>
-                                    <div className="bar bar-sec"></div>
-                                </div>
-
-                                <div className="resume-section sec-education">
-                                    <div className="section-header">
-                                        <span className="section-label">Education</span>
-                                        <span className="checkmark">✓</span>
-                                    </div>
-                                    <div className="bar bar-sec short"></div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Score Meter Card */}
-                        <div className="score-meter-card">
-                            <div className="score-title">ATS SCORE</div>
-                            <div className="circle-container">
-                                <svg viewBox="0 0 100 100" className="score-svg">
-                                    <circle cx="50" cy="50" r="40" className="score-bg-circle" />
-                                    <circle cx="50" cy="50" r="40" className="score-progress-circle" />
-                                </svg>
-                                <div className="score-number-display">
-                                    <span className="score-value">{score}</span>
-                                    <span className="score-percent">%</span>
+                        {/* Keywords Row */}
+                        <div className="keywords-panel">
+                            <div className="kw-group">
+                                <span className="kw-label green-lbl">Matched Keywords</span>
+                                <div className="kw-tags">
+                                    <span className="kw-tag tag-matched">React</span>
+                                    <span className="kw-tag tag-matched">Node.js</span>
+                                    <span className="kw-tag tag-matched">JavaScript</span>
+                                    <span className="kw-tag tag-matched">REST APIs</span>
                                 </div>
                             </div>
-                            <div className="score-status">
-                                {score === 0 ? "Ready" : score < 92 ? "Scanning..." : "Optimized!"}
+                            <div className="kw-group">
+                                <span className="kw-label coral-lbl">Missing Keywords</span>
+                                <div className="kw-tags">
+                                    <span className="kw-tag tag-missing">+ AWS</span>
+                                    <span className="kw-tag tag-missing">+ Docker</span>
+                                    <span className="kw-tag tag-missing">+ GraphQL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* AI Suggestions Card */}
+                        <div className="ai-suggestion-box">
+                            <div className="ai-suggest-icon">💡</div>
+                            <div className="ai-suggest-content">
+                                <span className="ai-suggest-title">AI Suggestion</span>
+                                <p className="ai-suggest-text">Add 3 action metrics to experience to boost score by +14%</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        </section>
+    );
 }
 
 export default Box;
