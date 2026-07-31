@@ -3,64 +3,72 @@ import { parseResume } from '../services/parser.js';
 import { analyzeWithGemini } from '../services/geminiAnalyzer.js';
 
 export const analyzeResume = async (req, res) => {
+  console.log("\n========== NEW ANALYSIS ==========");
+  console.time("Total Analysis");
+
   try {
+    console.log("[1] Analysis request received");
+
     const file = req.file;
     const { jobDescription } = req.body;
     const userId = req.user.id;
 
     if (!file) {
-      return res.status(400).json({ success: false, error: 'No file uploaded' });
+      console.log("[X] No file uploaded");
+      return res.status(400).json({
+        success: false,
+        error: 'No file uploaded'
+      });
     }
 
-    // 1. Extract Text
-    const text = await parseResume(file);
+    console.log("[2] Resume:", file.originalname);
 
-    // 2. Perform Gemini AI Analysis directly (no fallback)
+    // 1. Extract Text
+    console.time("Resume Parsing");
+    const text = await parseResume(file);
+    console.timeEnd("Resume Parsing");
+    console.log("[3] Resume parsed successfully");
+
+    // 2. Gemini
+    console.log("[4] Sending request to Gemini...");
+    console.time("Gemini Analysis");
+
     const geminiResult = await analyzeWithGemini(text, jobDescription);
 
-    // 3. Save to DB on clean success
-    const newAnalysis = new ResumeAnalysis({
+    console.timeEnd("Gemini Analysis");
+    console.log("[5] Gemini analysis successful");
+
+    // 3. Save to DB
+    console.log("[6] Saving analysis to MongoDB...");
+    await new ResumeAnalysis({
       userId,
       fileName: file.originalname,
       analysisSource: 'ai',
       aiModel: geminiResult.aiModel,
       analysisVersion: geminiResult.analysisVersion,
       ...geminiResult
-    });
+    }).save();
 
-    await newAnalysis.save();
+    console.log("[7] Saved successfully");
 
-    // 4. Return result
+    console.timeEnd("Total Analysis");
+    console.log("[8] Response sent to frontend");
+
     return res.status(200).json({
       success: true,
-      _id: newAnalysis._id,
       analysisSource: 'ai',
       ...geminiResult
     });
+
   } catch (error) {
-    console.error('[AI Analysis Failure]', error);
+    console.timeEnd("Total Analysis");
+
+    console.error("[X] Analysis failed");
+    console.error(error);
+
     return res.status(500).json({
       success: false,
       error: 'AI analysis failed. Please try again.'
     });
-  }
-};
-
-export const getAnalysis = async (req, res) => {
-  try {
-    const analysis = await ResumeAnalysis.findById(req.params.id);
-    if (!analysis) {
-      return res.status(404).json({ message: 'Analysis not found' });
-    }
-
-    // Ensure the analysis belongs to the user requesting it
-    if (analysis.userId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to view this analysis' });
-    }
-
-    res.status(200).json(analysis);
-  } catch (error) {
-    console.error('Error fetching analysis:', error);
-    res.status(500).json({ message: 'Error fetching analysis' });
   }
 };
