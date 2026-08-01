@@ -321,7 +321,7 @@ export function UploadResume() {
                   <div className="error-icon-circle">
                     <FaExclamationTriangle className="error-warning-icon" />
                   </div>
-                  <h2 className="error-card-title">Analysis Failed</h2>
+                  <h2 className="error-card-title">Analysis  Failed</h2>
                   <p className="error-card-body">
                     We couldn't analyze your resume at the moment.<br/>Please try again.
                   </p>

@@ -386,6 +386,7 @@
 }
 
 .error-card-title {
+  width: 135px;
   font-family: 'Outfit', 'Inter', sans-serif;
   font-size: 20px;
   font-weight: 700;
